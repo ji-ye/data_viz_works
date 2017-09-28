@@ -1,4 +1,6 @@
 # data_viz_works
+Ji, Ye 吉也
+<br/>
 Exploratory data task using traffc fatality data.
 
 ## data source
