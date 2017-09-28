@@ -43,8 +43,17 @@ count(acc, RUR_URB) # or, table(acc$RUR_URB, exclude=NULL)
 # 4. Merge on another data source
 fips = read_csv("fips.csv")
 glimpse(fips)
-#mutate(STATE = toString(STATE), COUNTY = toString(COUNTY))
 
+acc$STATE <- as.character(acc$STATE)
+acc$COUNTY <- as.character(acc$COUNTY)
+
+acc$STATE <- str_pad(acc$STATE, 2, "left", "0")
+acc$COUNTY <- str_pad(acc$COUNTY, 3, "left", "0")
+
+acc <- plyr::rename(acc, c(STATE = "StateFIPSCode"))
+acc <- plyr::rename(acc, c(COUNTY = "CountyFIPSCode"))
+
+left_join(acc, fips)
 
 # 5. Explore data
 
