@@ -53,9 +53,25 @@ acc$COUNTY <- str_pad(acc$COUNTY, 3, "left", "0")
 acc <- plyr::rename(acc, c(STATE = "StateFIPSCode"))
 acc <- plyr::rename(acc, c(COUNTY = "CountyFIPSCode"))
 
-left_join(acc, fips)
+acc <- left_join(acc, fips)
 
-# 5. Explore data
+
+# 5. Exploratory data analysis
+agg <- summarize(group_by(acc, StateName, YEAR), TOTAL = sum(FATALS))
+agg_wide <- agg %>% spread(YEAR, TOTAL)
+
+colnames(agg_wide) <- c("StateName", 'Y2014', 'Y2015')
+
+agg_wide <- mutate(agg_wide, Diff_perc = (Y2015 - Y2014) / Y2014)
+
+agg_wide <- arrange(agg_wide, desc(Diff_perc))
+
+agg <- filter(agg_wide, Diff_perc > .15 & !is.na(StateName))
+
+# doing the above with "%>%" and only one "<-"
+# ...mkay.
+
+glimpse(agg)
 
 
 # 6. ggplot2
