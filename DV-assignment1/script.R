@@ -69,9 +69,7 @@ agg_wide <- arrange(agg_wide, desc(Diff_perc))
 agg <- filter(agg_wide, Diff_perc > .15 & !is.na(StateName))
 
 # doing the above with "%>%" and only one "<-"
-# ...mkay.
+agg <- acc %>% group_by(StateName, YEAR) %>% summarize(TOTAL = sum(FATALS)) %>% spread(YEAR, TOTAL) %>% `colnames<-`(c("StateName", "Y2014", "Y2015")) %>% mutate(Diff_perc = (Y2015 - Y2014) / Y2014) %>% arrange(desc(Diff_perc)) %>% filter(Diff_perc >.15 & !is.na(StateName))
 
 glimpse(agg)
 
-
-# 6. ggplot2
