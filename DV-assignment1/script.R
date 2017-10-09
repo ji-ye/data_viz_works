@@ -54,13 +54,16 @@ acc <- plyr::rename(acc, c(STATE = "StateFIPSCode"))
 acc <- plyr::rename(acc, c(COUNTY = "CountyFIPSCode"))
 
 acc <- left_join(acc, fips)
-
+# works when column names joined on is the same, should check
+# not explicit as if they are multiple matches between x and y, will return all combo.
 
 # 5. Exploratory data analysis
 agg <- summarize(group_by(acc, StateName, YEAR), TOTAL = sum(FATALS))
 agg_wide <- agg %>% spread(YEAR, TOTAL)
 
 colnames(agg_wide) <- c("StateName", 'Y2014', 'Y2015')
+#should be corrected as below:
+# rename(acc, c("State" = "StateFIPSCode", "COUNTY" = "CountyFIPSCode"))
 
 agg_wide <- mutate(agg_wide, Diff_perc = (Y2015 - Y2014) / Y2014)
 
