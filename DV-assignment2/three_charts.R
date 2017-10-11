@@ -29,14 +29,14 @@ df_m <- data.frame(date=index(ts_m), coredata(ts_m))
 
 # Charts - Bitcoin exchange price & volume
 # note: color #85bb65" is known as dollar bill.
-p <- ggplot(data=coinbase_lim) + 
+p <- ggplot(data=coinbase_lim) +
   geom_line(size=.25,aes(Time, price), color="#325a8c") +
-  geom_point(data=df_m, aes(as.POSIXct(date), size=100, col1/5000, alpha=.9), color="#85bb65") + 
+  geom_point(data=df_m, aes(as.POSIXct(date), size=100, col1/5000, alpha=.9), color="#85bb65") +
   geom_vline(xintercept = as.POSIXct("2017-03-25"), colour="#ff7575", size=.75, alpha=.75) +
   geom_smooth(aes(Time, price), span=2, linetype="longdash", color="#4c88d3", alpha=.5) +
   scale_x_datetime(name = "", date_breaks = "3 month") +
   scale_y_continuous(name ="Bitcoin Hourly Exchange Rate in USD",
-                     breaks = c(0, 500, 1000, 1500, 2000, 2500, 3000),
+                     breaks = c(0, 3000, 500),
                      sec.axis = sec_axis(~.*5, name = "Monthly Trading Volume in USD (thousands)")) +
   ggtitle("Bitcoin Price & Volume", subtitle = "both experienced the greatest surge in history this year") +
   annotate(geom="text",x=as.POSIXct("2017-05-30"),
@@ -44,7 +44,7 @@ p <- ggplot(data=coinbase_lim) +
   annotate(geom="text",x=as.POSIXct("2015-2-08"),
            y= 3100,label="Data Source: Coinbase API", size=3.5, family = "mono", colour = "#666666") +
   theme(panel.grid.major.y = element_line( size=.1, color="#666666"),
-        panel.grid.major.x = element_line(),
+        panel.grid.major.x = element_blank(),
         panel.background = element_blank(),
         plot.title = element_text(size=18, family = "Helvetica", colour = "#3a3a3a", face = "bold"),
         plot.subtitle = element_text(size=12, family = "mono", colour = "#666666"),
