@@ -2,7 +2,9 @@
 title: "Explorative DataViz Short Paper"
 author: "Ji, Ye"
 date: "10/15/2017"
-output: pdf_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -127,6 +129,14 @@ line <- ggplot(data=coinbase_lim) +
 line
 ```
 
+# Narrative:
+The price of bitcoin can increase or decrease drastically over a
+short period of time. This graph mainly serves as a priliminary 
+clue to pinpoint certain time points wheen a new policy may have
+an impact on the price of Bitcoin, or vice versa. Additionally, 
+this graph could be used to find global price trend correlations.
+
+
 \pagebreak
 
 ### Graph two - histogram
@@ -168,6 +178,18 @@ hist <- ggplot(data=nodes, aes(reorder(factor(country), node), node)) +
 
 hist
 ```
+
+# Narrative:
+Countries that have more reachable nodes means more people in
+the countries arer involved in Bitcoin mining, which indicates
+that these countries are more likely to have favorable policies,
+or the lack of, to support the development of cryptocurrency.
+Therefore, this graph can help narrow down the origin of some
+major policies that have shaped the development of Bitcoin. This
+graph can be regard as a ranking of countries' involvement in
+digital currency. It is interesting to note that, this ranking is
+not necessarily ordered in accordance with the ranking of GDP,
+population, or even perceived internet presence by countries.
 
 \pagebreak
 
@@ -234,18 +256,22 @@ area <- ggplot(data=agg, aes(x = as.POSIXct(date), y = volume, fill = as.factor(
 area
 ```
 
+# Narrative:
+In this graph, we can see that bitcoin's daily trading volume is extremely
+volatile, perhaps even more so than its price. This usually suggests market
+manipulation, especially given Bitcoin's young economy, novel nature, and
+lack of regulation. Together with the price trend, this can help identify
+major policy change that either encourage (spike) or discourage (trough)
+speculation.
+
 \pagebreak
 
-## Graph Five - network of trust
+## Graph Four - network of trust
 ```{r, echo=FALSE, include=FALSE, result="hide"}
 soc <- read_csv("./data/soc-sign-bitcoinotc.csv", col_names = c("rater", "ratee", "score", "rate_timestamp"))
+```
 
-col.1 <- adjustcolor("#FF9900")
-col.2 <- adjustcolor("blue")
-edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
-edge.col <- edge.pal(100)
-
-
+```{r, fig.width=14, fig.height=12}
 heatmap <- ggplot(soc, aes(x=rater, y=ratee, fill=score)) + geom_tile() +
   scale_fill_distiller(type="div", palette = "RdYlBu") +
   ggtitle("The who-trusts-whom nework of Bitcoin trader on a platform called Bitcoin OTC",
@@ -268,31 +294,35 @@ heatmap <- ggplot(soc, aes(x=rater, y=ratee, fill=score)) + geom_tile() +
         legend.position = c(0, 0),
         plot.caption = element_text(size=11, family = "mono", colour = "#666666"),
         plot.margin = unit(c(2,2,2,2), "cm"))
-#legend(x=1, y=1, legend="trust score from -10 to 10 (increment of 1)")
-#net_soc <- soc[order(soc$rater, soc$ratee),]
-#net_soc <- graph_from_data_frame(d=soc, directed = T)
-
-#colrs <- c("gray50", "tomato", "gold")
-
-#pale_orange <- adjustcolor("#FF9900", alpha=0.1)
-#l <- layout_randomly(net_soc)
-#plot(net_soc,
-#     layout=l,
-#     edge.arrow.size=0.1,
-#     vertex.size=2,
-#     vertex.color=pale_orange,
-#     vertex.frame.color=colrs_transparent,
-#     vertex.label=NA,
-#     edge.color=edge.col,
-     #main="The majority of long-term Bitcoin users does not engage in transaction",
-     #sub="Data source: ELTE Bitcoin Project website and resources (2009 - 2013)",
-#     output.mode='inline'
-     #)
+heatmap
 ```
+
+# Narrative:
+While sparse and barely visible, this graph does provide some
+insights about the Bitcoin market. First, it allows us to identify
+some super raters and ratees, who are more likely to be the major
+player that can manipulate Bitcoin price. Second, although orange
+(trustworthy) is more prevalent, there are quite a few blue spots 
+on this heatmap, showing the users that are rated as fraud by other users.
+At a glimpse, This graph shows that fraud is frequent in digital currency
+market, which underscores its unregulated nature.
 
 \pagebreak
 
-## Graph Five - long-term user network
+## Graph Five: long-term user network
+
+# Narrative:
+This is a graph that visualizes the transaction activities of several
+thousand long-term Bitcoin users during 2009 - 2013. We can see that
+the majority is inactive, with one user radiating assets to many others,
+and a few others repeatedly send money to themselves. Not only can this
+network graph serves as a piece of evidence to show that most people purcahse Bitcoin
+for speculation, it also shows that while the technological philosophy of
+Bitcoin is decentralized, its commercial activity is very much the opposite.
+
+
+
+### Graph Five: network
 ```{r, echo=FALSE, include=FALSE, result="hide"}
 links <- read_tsv("./data/lt_graph_ELTE.txt", col_names = c("sender", "recipient", "transaction_timestamp"))
 net <- graph_from_data_frame(d=links, directed = T)
