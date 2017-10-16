@@ -1,6 +1,7 @@
 ---
-title: "Introduction to ggplot2: Three Charts"
+title: "Explorative DataViz Short Paper"
 author: "Ji, Ye"
+date: "10/15/2017"
 output: pdf_document
 ---
 
@@ -10,27 +11,33 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ### Assignment Requirement
-Explore your data with ggplot2, making and exporting to pdf three graphs of meaningfully distinct types. Submit those graphs to Canvas.
+This assignment builds off the last assignment, resulting in a single document either in PDF or HTML form exported from an R markdown document. You must use the data exclusively from your portfolio proposal! Further, this document should have:
 
-Use at least:
+* Five data visualizations of most distinct graph types, made with ggplot2; This can include the three visualizations from last week, though you can replace them if you want. Note that graph requirements always include:
 
-* five different aesthetics;
+    + Correct usage of all visual encodings;
 
-* five different non-aesthetic options;
+    + Appropriate data sourcing;
 
-* four different geoms;
+    + Proper labeling of ALL visual encodings, as well as an appropriate title and subtitle;
 
-* two different scales (meaning change scale option for at least two of the scales).
+    + The code you used to generate each graphic, right above the graph (R Markdown should make this easy). 
 
-Include an narrative graph title, an explanatory subtitle, and explicit data sourcing. Make sure to include labels and scales for all visual encodings. 
+* A written narrative for each graph, from three to five sentences, describing the context of the graph and how it informs about your policy topic. You can write this as a narrative.
+
+Note that, over time, you are expected to tackle progressively more varied and ambitious graph types. At this stage in the course, the standard is still not very high. That said, you should be able to clearly articulate the value of the graphs you created so far - meaning they need to make sense and have some value-add. 
+
+Please submit the URL of the file on a Git repository (it can be one git repo you keep adding to, or a stand alone repository).
 
 ```{r, echo=TRUE, include=FALSE, results="hide"}
-#setwd("./GitHub/data_viz_works/DV-assignment2/")
+setwd("/Users/apple/Github/data_viz_works/")
+
 install.packages("easypackages", repos = "http://cran.us.r-project.org")
 library(easypackages)
-packages("anytime","tidyverse","rmarkdown","readr", "haven", "dplyr", "stringr", "ggplot2", "gridExtra")
+packages("anytime","tidyverse","rmarkdown","readr", "haven", "dplyr", "stringr", "ggplot2", "xts")
+
 # Import data
-coinbase = read_csv("coinbaseUSD.csv")
+coinbase = read_csv("./data/coinbaseUSD.csv")
 colnames(coinbase) = c("unix_timestamp", "price", "volume_btc")
                          
 # Convert unix timestamp to human-readable date & time
@@ -41,7 +48,6 @@ coinbase <- mutate(coinbase, volume_usd = volume_btc * price)
 coinbase_lim <- sample_frac(coinbase, size = 0.01)
 
 # aggregate trading volume data into month
-packages("xts")
 ts <- xts(coinbase_lim$volume_usd, as.Date(coinbase_lim$unix_timestamp, "%Y-%m-%d"))
 ts_d = apply.daily(ts, FUN=sum)
 ts_m = apply.monthly(ts_d, FUN=sum)
@@ -102,7 +108,7 @@ line
 
 ### Chart two
 ```{r, echo=FALSE, include=FALSE, result="hide"}
-nodes <- read_csv("nodes_by_countries.csv")
+nodes <- read_csv("./data/nodes_by_countries.csv")
 ```
 
 ```{r, fig.width = 8, fig.height = 12}
@@ -140,7 +146,6 @@ hist
 
 ## Chart Three
 ```{r, echo=FALSE, include=FALSE, result="hide"}
-#coinbase_lim$volume_usd, coinbase_lim$volume_btc, 
 ts <- xts(coinbase_lim$volume_usd, as.Date(coinbase_lim$unix_timestamp, "%Y-%m-%d"))
 ts_d = apply.daily(ts, FUN=sum)
 #ts_m = apply.monthly(ts_d, FUN=sum)
