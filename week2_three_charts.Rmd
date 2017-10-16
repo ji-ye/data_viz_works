@@ -1,0 +1,203 @@
+---
+title: "Introduction to ggplot2: Three Charts"
+author: "Ji, Ye"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### Assignment Requirement
+Explore your data with ggplot2, making and exporting to pdf three graphs of meaningfully distinct types. Submit those graphs to Canvas.
+
+Use at least:
+
+* five different aesthetics;
+
+* five different non-aesthetic options;
+
+* four different geoms;
+
+* two different scales (meaning change scale option for at least two of the scales).
+
+Include an narrative graph title, an explanatory subtitle, and explicit data sourcing. Make sure to include labels and scales for all visual encodings. 
+
+```{r, echo=TRUE, include=FALSE, results="hide"}
+#setwd("./GitHub/data_viz_works/DV-assignment2/")
+install.packages("easypackages", repos = "http://cran.us.r-project.org")
+library(easypackages)
+packages("anytime","tidyverse","rmarkdown","readr", "haven", "dplyr", "stringr", "ggplot2", "gridExtra")
+# Import data
+coinbase = read_csv("coinbaseUSD.csv")
+colnames(coinbase) = c("unix_timestamp", "price", "volume_btc")
+                         
+# Convert unix timestamp to human-readable date & time
+coinbase <- mutate(coinbase, unix_timestamp = anytime(unix_timestamp))
+coinbase <- mutate(coinbase, volume_usd = volume_btc * price)
+
+# sample down to 1 percent
+coinbase_lim <- sample_frac(coinbase, size = 0.01)
+
+# aggregate trading volume data into month
+packages("xts")
+ts <- xts(coinbase_lim$volume_usd, as.Date(coinbase_lim$unix_timestamp, "%Y-%m-%d"))
+ts_d = apply.daily(ts, FUN=sum)
+ts_m = apply.monthly(ts_d, FUN=sum)
+df_m <- data.frame(date=index(ts_m), coredata(ts_m))
+```
+
+### Chart one
+```{r, fig.width = 16, fig.height = 9, result="hide"}
+line <- ggplot(data=coinbase_lim) +
+  geom_line(size=.25,
+            aes(unix_timestamp, price),
+            color="#325a8c") +
+  geom_vline(xintercept = as.POSIXct("2017-03-25"),
+             colour="#ff7575",
+             size=.75,
+             alpha=.75) +
+  geom_smooth(aes(unix_timestamp,price),
+              span=2,
+              linetype="longdash",
+              color="#4c88d3",
+              alpha=.5) +
+  scale_x_datetime(name = "",
+                   date_breaks = "3 month") +
+  scale_y_continuous(name ="Bitcoin Hourly Exchange Rate in USD",
+                     breaks = c(0, 500, 1000, 1500, 2000, 2500, 3000)) +
+  ggtitle("Bitcoin Daily Price",
+          subtitle = "experienced the greatest surge in history this year") +
+  labs(caption = "Data source: Coinbase API") +
+  annotate(geom="text",
+           x=as.POSIXct("2017-05-30"),
+           y=675,
+           label="2017-03-25 Surge starts",
+           colour="#ff7575",
+           fontface="bold",
+           alpha=.85) +
+  theme(panel.grid.major.y = element_line( size=.1, color="#666666"),
+        panel.grid.major.x = element_blank(),
+        panel.background = element_blank(),
+        plot.title = element_text(size=18,
+                                  family = "Helvetica",
+                                  colour = "#3a3a3a",
+                                  face = "bold"),
+        plot.subtitle = element_text(size=12, family = "mono", colour = "#666666"),
+        axis.title.y.right = element_text(color="#85bb65"),
+        axis.text.y.right = element_text(color="#85bb65"),
+        axis.text.y = element_text(color="#325a8c"),
+        axis.title.y = element_text(color="#325a8c"),
+        axis.ticks.y = element_line( size=.25, color="#666666"),
+        axis.text.x = element_text(color="#7f7f7f"),
+        legend.position = "none",
+        plot.caption = element_text(size=11, family = "mono", colour = "#666666"),
+        plot.margin = unit(c(2,2,2,2), "cm"))
+
+line
+```
+
+\pagebreak
+
+### Chart two
+```{r, echo=FALSE, include=FALSE, result="hide"}
+nodes <- read_csv("nodes_by_countries.csv")
+```
+
+```{r, fig.width = 8, fig.height = 12}
+hist <- ggplot(data=nodes, aes(reorder(factor(country), node), node)) +
+  geom_col(width=0.9, position=position_dodge(width=5), fill = "#999999") +
+  geom_text(aes(label=node), color="#666666", position=position_dodge(width=0.9), vjust=0.35, hjust=-.25) +
+  ggtitle("Bitcoin Nodes Distribution by Countries",
+          subtitle = "Reachable nodes as of Oct 15, 2017") +
+  ylab("") +
+  xlab("") +
+  labs(caption = "Data source: BitNodes.21.co") +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.background = element_blank(),
+        plot.title = element_text(size=18,
+                                  family = "Helvetica",
+                                  colour = "#3a3a3a",
+                                  face = "bold"),
+        plot.subtitle = element_text(size=12, family = "mono", colour = "#666666"),
+        axis.text.y = element_text(color="#325a8c"),
+        axis.title.y = element_text(color="#325a8c"),
+        axis.ticks.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank(),
+        legend.position = "none",
+        plot.caption = element_text(size=11, family = "mono", colour = "#666666"),
+        plot.margin = unit(c(2,2,2,2), "cm")) +
+  scale_x_discrete(expand=c(0,0)) +
+  coord_flip()
+
+hist
+```
+
+\pagebreak
+
+## Chart Three
+```{r, echo=FALSE, include=FALSE, result="hide"}
+#coinbase_lim$volume_usd, coinbase_lim$volume_btc, 
+ts <- xts(coinbase_lim$volume_usd, as.Date(coinbase_lim$unix_timestamp, "%Y-%m-%d"))
+ts_d = apply.daily(ts, FUN=sum)
+#ts_m = apply.monthly(ts_d, FUN=sum)
+df_d <- data.frame(date=index(ts_d), coredata(ts_d))
+colnames(df_d) <- c("date", "volume_usd")
+
+ts_btc <- xts(coinbase_lim$volume_btc, as.Date(coinbase_lim$unix_timestamp, "%Y-%m-%d"))
+ts_d_btc = apply.daily(ts_btc, FUN=sum)
+#ts_m_btc = apply.monthly(ts_d_btc, FUN=sum)
+df_d_btc <- data.frame(date=index(ts_d_btc), coredata(ts_d_btc))
+colnames(df_d_btc) <- c("date", "volume_btc")
+
+df <- left_join(df_d, df_d_btc)
+
+df_btc <- df[, c("date", "volume_btc")]
+df_btc$unit <- "Bitcoin"
+colnames(df_btc) <- c("date", "volume", "unit")
+
+df_usd <- df[, c("date", "volume_usd")]
+df_usd <- mutate(df_usd, volume_usd = volume_usd/1000)
+df_usd$unit <- "Thousand USD"
+colnames(df_usd) <- c("date", "volume", "unit")
+
+agg <- rbind(df_btc, df_usd)
+```
+
+
+```{r, fig.width = 16, fig.height = 12}
+# note: color #85bb65 is nicknamed as "dollar bill green".
+#       color #FF9900 is the orange from bitcoin logo.
+area <- ggplot(data=agg, aes(x = as.POSIXct(date), y = volume, fill = as.factor(unit))) +
+  geom_area(position = "stack") +
+  scale_x_datetime(date_breaks = "3 months", expand=c(0,0)) +
+  scale_y_continuous(breaks = c(0, 250, 500, 750, 1000, 2000, 3000)) + 
+  scale_fill_manual(values = alpha(c("#FF9900", "#85bb65")), 0.2) +
+  ggtitle("Bitcoin Daily Trading Volume",
+          subtitle = "in number of bitcoin & Thousands of USD") +
+  labs(caption = "Data source: Coinbase API",
+       x = "",
+       y = "Volume") +
+  theme(panel.grid.major.y =element_line( size=.1, color="#999999"),
+        panel.grid.major.x = element_blank(),
+        panel.background = element_blank(),
+        plot.title = element_text(size=18,
+                                  family = "Helvetica",
+                                  colour = "#3a3a3a",
+                                  face = "bold"),
+        plot.subtitle = element_text(size=12, family = "mono", colour = "#666666"),
+        axis.text.y = element_text(color="#666666"),
+        axis.title.y = element_text(color="#666666"),
+        axis.ticks.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_text(size=10, family = "mono", colour = "#666666"),
+        legend.title = element_blank(),
+        legend.position = c(0.1, 0.9),
+        plot.caption = element_text(size=11, family = "mono", colour = "#666666"),
+        plot.margin = unit(c(2,2,2,2), "cm"))
+
+area
+```
