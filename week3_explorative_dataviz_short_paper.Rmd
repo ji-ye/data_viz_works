@@ -132,8 +132,8 @@ line
 # Narrative:
 The price of bitcoin can increase or decrease drastically over a
 short period of time. This graph mainly serves as a priliminary 
-clue to pinpoint certain time points wheen a new policy may have
-an impact on the price of Bitcoin, or vice versa. Additionally, 
+clue to pinpoint certain time points where a new policy may have
+impacted the price of Bitcoin, or vice versa. And potentially, 
 this graph could be used to find global price trend correlations.
 
 
@@ -144,7 +144,7 @@ this graph could be used to find global price trend correlations.
 nodes <- read_csv("./data/nodes_by_countries.csv")
 ```
 
-```{r, fig.width = 8, fig.height = 12}
+```{r, fig.width = 12, fig.height = 18}
 hist <- ggplot(data=nodes, aes(reorder(factor(country), node), node)) +
   geom_col(width=0.9, position=position_dodge(width=5), fill = "#999999") +
   geom_text(aes(label=node),
@@ -181,15 +181,16 @@ hist
 
 # Narrative:
 Countries that have more reachable nodes means more people in
-the countries arer involved in Bitcoin mining, which indicates
-that these countries are more likely to have favorable policies,
+the countries are involved in Bitcoin mining, which indicates
+that these countries are more likely to have policies,
 or the lack of, to support the development of cryptocurrency.
-Therefore, this graph can help narrow down the origin of some
-major policies that have shaped the development of Bitcoin. This
-graph can be regard as a ranking of countries' involvement in
-digital currency. It is interesting to note that, this ranking is
-not necessarily ordered in accordance with the ranking of GDP,
-population, or even perceived internet presence by countries.
+For an explorative analysis, this graph is helpful for narrowing
+down the origin of some major policies that have shaped the 
+development of Bitcoin. If we consider this graph as a ranking
+of countries' involvement in digital currency. It is interesting
+to note that, this ranking is not necessarily ordered in exact 
+accordance with the ranking of GDP, population, technological
+advancement, or even perceived internet presence.
 
 \pagebreak
 
@@ -258,11 +259,11 @@ area
 
 # Narrative:
 In this graph, we can see that bitcoin's daily trading volume is extremely
-volatile, perhaps even more so than its price. This usually suggests market
-manipulation, especially given Bitcoin's young economy, novel nature, and
-lack of regulation. Together with the price trend, this can help identify
-major policy change that either encourage (spike) or discourage (trough)
-speculation.
+volatile, perhaps even more so than its price. This level of volatility can
+be a sign for market manipulation, especially given Bitcoin's young economy,
+novel nature, and lack of regulation. Together with the price trend, this 
+graph can help identify major policy changes that either encourage (spike)
+or discourage (trough) speculation.
 
 \pagebreak
 
@@ -272,6 +273,7 @@ soc <- read_csv("./data/soc-sign-bitcoinotc.csv", col_names = c("rater", "ratee"
 ```
 
 ```{r, fig.width=14, fig.height=12}
+# View in full screen for clarity.
 heatmap <- ggplot(soc, aes(x=rater, y=ratee, fill=score)) + geom_tile() +
   scale_fill_distiller(type="div", palette = "RdYlBu") +
   ggtitle("The who-trusts-whom nework of Bitcoin trader on a platform called Bitcoin OTC",
@@ -301,11 +303,11 @@ heatmap
 While sparse and barely visible, this graph does provide some
 insights about the Bitcoin market. First, it allows us to identify
 some super raters and ratees, who are more likely to be the major
-player that can manipulate Bitcoin price. Second, although orange
+player capable of manipulating Bitcoin price. Second, although orange
 (trustworthy) is more prevalent, there are quite a few blue spots 
-on this heatmap, showing the users that are rated as fraud by other users.
-At a glimpse, This graph shows that fraud is frequent in digital currency
-market, which underscores its unregulated nature.
+on this heatmap, marking the users that are rated as fraud by others.
+At a glimpse, fraud is frequent in digital currency market, which
+underscores its unregulated nature.
 
 \pagebreak
 
@@ -316,9 +318,10 @@ This is a graph that visualizes the transaction activities of several
 thousand long-term Bitcoin users during 2009 - 2013. We can see that
 the majority is inactive, with one user radiating assets to many others,
 and a few others repeatedly send money to themselves. Not only can this
-network graph serves as a piece of evidence to show that most people purcahse Bitcoin
-for speculation, it also shows that while the technological philosophy of
-Bitcoin is decentralized, its commercial activity is very much the opposite.
+network graph serves as a piece of evidence to show that most people 
+purcahse Bitcoin for the purpose of speculation, it also shows that, 
+while the technological philosophy of Bitcoin is decentralization,
+its ownership and commercial activity is very much the opposite.
 
 
 
