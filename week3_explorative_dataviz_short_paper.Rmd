@@ -77,7 +77,7 @@ While I'm waiting for my local blockchain file (150 GB and growing) to finish do
 
 \pagebreak
 
-### Graph one
+### Graph one - line chart
 ```{r, fig.width = 16, fig.height = 9, result="hide"}
 line <- ggplot(data=coinbase_lim) +
   geom_line(size=.25,
@@ -129,7 +129,7 @@ line
 
 \pagebreak
 
-### Graph two
+### Graph two - histogram
 ```{r, echo=FALSE, include=FALSE, result="hide"}
 nodes <- read_csv("./data/nodes_by_countries.csv")
 ```
@@ -171,7 +171,7 @@ hist
 
 \pagebreak
 
-## Graph Three
+## Graph Three - stacked area graph
 ```{r, echo=FALSE, include=FALSE, result="hide"}
 ts <- xts(coinbase_lim$volume_usd, as.Date(coinbase_lim$unix_timestamp, "%Y-%m-%d"))
 ts_d = apply.daily(ts, FUN=sum)
@@ -236,7 +236,7 @@ area
 
 \pagebreak
 
-## Graph Four
+## Graph Four - network 1
 ```{r, echo=FALSE, include=FALSE, result="hide"}
 soc <- read_csv("./data/soc-sign-bitcoinotc.csv")
 lt_graph <- read_tsv("./data/lt_graph_ELTE.txt")
@@ -245,4 +245,4 @@ lt_graph <- read_tsv("./data/lt_graph_ELTE.txt")
 
 \pagebreak
 
-## Graph Five
+## Graph Five - network 2
