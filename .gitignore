@@ -2,3 +2,9 @@
 *.csv
 
 *.sas7bdat
+
+*.txt
+
+*.tex
+
+DV-assignment2/.Rhistory
