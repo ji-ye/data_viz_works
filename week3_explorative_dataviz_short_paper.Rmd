@@ -34,7 +34,7 @@ setwd("/Users/apple/Github/data_viz_works/")
 
 install.packages("easypackages", repos = "http://cran.us.r-project.org")
 library(easypackages)
-packages("anytime","tidyverse","rmarkdown","readr", "haven", "dplyr", "stringr", "ggplot2", "xts")
+packages("anytime","tidyverse","rmarkdown","readr", "haven", "dplyr", "stringr", "ggplot2", "xts", "igraph")
 
 # Import data
 coinbase = read_csv("./data/coinbaseUSD.csv")
@@ -236,13 +236,90 @@ area
 
 \pagebreak
 
-## Graph Four - network 1
+## Graph Five - network of trust
 ```{r, echo=FALSE, include=FALSE, result="hide"}
-soc <- read_csv("./data/soc-sign-bitcoinotc.csv")
-lt_graph <- read_tsv("./data/lt_graph_ELTE.txt")
-```
+soc <- read_csv("./data/soc-sign-bitcoinotc.csv", col_names = c("rater", "ratee", "score", "rate_timestamp"))
 
+col.1 <- adjustcolor("#FF9900")
+col.2 <- adjustcolor("blue")
+edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
+edge.col <- edge.pal(100)
+
+
+heatmap <- ggplot(soc, aes(x=rater, y=ratee, fill=score)) + geom_tile() +
+  scale_fill_distiller(type="div", palette = "RdYlBu") +
+  ggtitle("The who-trusts-whom nework of Bitcoin trader on a platform called Bitcoin OTC",
+          subtitle = "is sparse and unregulated") +
+  labs(caption = "Data source: Bitcoin OTC trust network by Stanford University") +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.background = element_blank(),
+        plot.title = element_text(size=18,
+                                  family = "Helvetica",
+                                  colour = "#3a3a3a",
+                                  face = "bold"),
+        plot.subtitle = element_text(size=12, family = "mono", colour = "#666666"),
+        axis.text.y = element_text(color="#666666"),
+        axis.title.y = element_text(color="#666666"),
+        axis.ticks.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_text(size=10, family = "mono", colour = "#666666"),
+        legend.title = element_text(),
+        legend.position = c(0, 0),
+        plot.caption = element_text(size=11, family = "mono", colour = "#666666"),
+        plot.margin = unit(c(2,2,2,2), "cm"))
+#legend(x=1, y=1, legend="trust score from -10 to 10 (increment of 1)")
+#net_soc <- soc[order(soc$rater, soc$ratee),]
+#net_soc <- graph_from_data_frame(d=soc, directed = T)
+
+#colrs <- c("gray50", "tomato", "gold")
+
+#pale_orange <- adjustcolor("#FF9900", alpha=0.1)
+#l <- layout_randomly(net_soc)
+#plot(net_soc,
+#     layout=l,
+#     edge.arrow.size=0.1,
+#     vertex.size=2,
+#     vertex.color=pale_orange,
+#     vertex.frame.color=colrs_transparent,
+#     vertex.label=NA,
+#     edge.color=edge.col,
+     #main="The majority of long-term Bitcoin users does not engage in transaction",
+     #sub="Data source: ELTE Bitcoin Project website and resources (2009 - 2013)",
+#     output.mode='inline'
+     #)
+```
 
 \pagebreak
 
-## Graph Five - network 2
+## Graph Five - long-term user network
+```{r, echo=FALSE, include=FALSE, result="hide"}
+links <- read_tsv("./data/lt_graph_ELTE.txt", col_names = c("sender", "recipient", "transaction_timestamp"))
+net <- graph_from_data_frame(d=links, directed = T)
+```
+
+```{r}
+# set color
+col.1 <- adjustcolor("#666666", alpha=0.4)
+col.2 <- adjustcolor("#000000", alpha=0.4)
+edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
+edge.col <- edge.pal(100)
+
+colrs_transparent <- adjustcolor("#FFFFFF", alpha=0)
+
+#net_simplified <- simplify(net,remove.multiple = F,edge.attr.comb=list(Weight="sum"), remove.loops = T)
+l <- layout_on_sphere(net)
+plot(net,
+     layout=l,
+     edge.arrow.size=0.1,
+     vertex.size=2,
+     vertex.color="#FF9900",
+     vertex.frame.color=colrs_transparent,
+     vertex.label=NA,
+     edge.color=edge.col,
+     main="The majority of long-term Bitcoin users does not engage in transaction",
+     sub="Data source: ELTE Bitcoin Project website and resources (2009 - 2013)",
+     output.mode='inline'
+     )
+legend(x=-0.3, y=-1.1, c("long-term bitcoin user"), col="#FF9900", pch=21, pt.bg="#FF9900")
+```
