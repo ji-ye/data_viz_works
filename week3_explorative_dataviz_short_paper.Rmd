@@ -53,8 +53,31 @@ ts_d = apply.daily(ts, FUN=sum)
 ts_m = apply.monthly(ts_d, FUN=sum)
 df_m <- data.frame(date=index(ts_m), coredata(ts_m))
 ```
+### Introduction
 
-### Chart one
+There are several advantages to dedicate a data visualization portfolio and 10-week effort to digital currency:
+
+    + Massive and Robust data source: Blockchain is a public transaction log
+    that exists as a distributed database, validated by its powerful algorithm.
+    
+    + Fitting data types: Blockchain data includes time and IP addresses, and 
+    can be updated frequently, which means it is useful for both the static and
+    dynamic data visualizations.
+    
+    + Well-supported: I can save the entire blockchain file locally,use 
+    community-maintained tools to parse it, and keep the data up-to-date.
+    
+    + Policy-setting: Digital currencies are being used as store of value to 
+    fight inflation in turbulent economies such as Zimbabwe and Latin American
+    countries. Central Banks are issuing experimental policies in response to 
+    the dessemination of digital currency and blockchain technology.
+    
+While I'm waiting for my local blockchain file (150 GB and growing) to finish download, I will explore some secondary data sources published by major Bitcoin exchanges and platforms to better understand the data.
+
+
+\pagebreak
+
+### Graph one
 ```{r, fig.width = 16, fig.height = 9, result="hide"}
 line <- ggplot(data=coinbase_lim) +
   geom_line(size=.25,
@@ -106,7 +129,7 @@ line
 
 \pagebreak
 
-### Chart two
+### Graph two
 ```{r, echo=FALSE, include=FALSE, result="hide"}
 nodes <- read_csv("./data/nodes_by_countries.csv")
 ```
@@ -114,7 +137,11 @@ nodes <- read_csv("./data/nodes_by_countries.csv")
 ```{r, fig.width = 8, fig.height = 12}
 hist <- ggplot(data=nodes, aes(reorder(factor(country), node), node)) +
   geom_col(width=0.9, position=position_dodge(width=5), fill = "#999999") +
-  geom_text(aes(label=node), color="#666666", position=position_dodge(width=0.9), vjust=0.35, hjust=-.25) +
+  geom_text(aes(label=node),
+            color="#666666",
+            position=position_dodge(width=0.9),
+            vjust=0.35,
+            hjust=-.25) +
   ggtitle("Bitcoin Nodes Distribution by Countries",
           subtitle = "Reachable nodes as of Oct 15, 2017") +
   ylab("") +
@@ -144,7 +171,7 @@ hist
 
 \pagebreak
 
-## Chart Three
+## Graph Three
 ```{r, echo=FALSE, include=FALSE, result="hide"}
 ts <- xts(coinbase_lim$volume_usd, as.Date(coinbase_lim$unix_timestamp, "%Y-%m-%d"))
 ts_d = apply.daily(ts, FUN=sum)
@@ -206,3 +233,16 @@ area <- ggplot(data=agg, aes(x = as.POSIXct(date), y = volume, fill = as.factor(
 
 area
 ```
+
+\pagebreak
+
+## Graph Four
+```{r, echo=FALSE, include=FALSE, result="hide"}
+soc <- read_csv("./data/soc-sign-bitcoinotc.csv")
+lt_graph <- read_tsv("./data/lt_graph_ELTE.txt")
+```
+
+
+\pagebreak
+
+## Graph Five
