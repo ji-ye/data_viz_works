@@ -332,6 +332,8 @@ net <- graph_from_data_frame(d=links, directed = T)
 ```
 
 ```{r}
+# ISSUE: cannot knit this chunk.
+
 # set color
 col.1 <- adjustcolor("#666666", alpha=0.4)
 col.2 <- adjustcolor("#000000", alpha=0.4)
