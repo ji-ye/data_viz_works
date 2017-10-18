@@ -17,13 +17,18 @@ This assignment builds off the last assignment, resulting in a single document e
 
 * Five data visualizations of most distinct graph types, made with ggplot2; This can include the three visualizations from last week, though you can replace them if you want. Note that graph requirements always include:
 
+
     + Correct usage of all visual encodings;
+
 
     + Appropriate data sourcing;
 
+
     + Proper labeling of ALL visual encodings, as well as an appropriate title and subtitle;
 
+
     + The code you used to generate each graphic, right above the graph (R Markdown should make this easy). 
+
 
 * A written narrative for each graph, from three to five sentences, describing the context of the graph and how it informs about your policy topic. You can write this as a narrative.
 
@@ -59,23 +64,22 @@ df_m <- data.frame(date=index(ts_m), coredata(ts_m))
 
 There are several advantages to dedicate a data visualization portfolio and 10-week effort to digital currency:
 
-    + Massive and Robust data source: Blockchain is a public transaction log
-    that exists as a distributed database, validated by its powerful algorithm.
+* Massive and Robust data source: Blockchain is a public transaction log
+  that exists as a distributed database, validated by its powerful algorithm.
     
-    + Fitting data types: Blockchain data includes time and IP addresses, and 
-    can be updated frequently, which means it is useful for both the static and
-    dynamic data visualizations.
+* Fitting data types: Blockchain data includes time and IP addresses, and 
+  can be updated frequently, which means it is useful for both the static and
+  dynamic data visualizations.
     
-    + Well-supported: I can save the entire blockchain file locally,use 
-    community-maintained tools to parse it, and keep the data up-to-date.
+* Well-supported: I can save the entire blockchain file locally,use 
+  community-maintained tools to parse it, and keep the data up-to-date.
     
-    + Policy-setting: Digital currencies are being used as store of value to 
-    fight inflation in turbulent economies such as Zimbabwe and Latin American
-    countries. Central Banks are issuing experimental policies in response to 
-    the dessemination of digital currency and blockchain technology.
+* Policy-setting: Digital currencies are being used as store of value to 
+fight inflation in turbulent economies such as Zimbabwe and Latin American
+countries. Central Banks are issuing experimental policies in response to 
+the dessemination of digital currency and blockchain technology.
     
-While I'm waiting for my local blockchain file (150 GB and growing) to finish download, I will explore some secondary data sources published by major Bitcoin exchanges and platforms to better understand the data.
-
+This paper will explore some data sources published by major Bitcoin exchanges and platforms as an market overview.
 
 \pagebreak
 
@@ -98,7 +102,7 @@ line <- ggplot(data=coinbase_lim) +
                    date_breaks = "3 month") +
   scale_y_continuous(name ="Bitcoin Hourly Exchange Rate in USD",
                      breaks = c(0, 500, 1000, 1500, 2000, 2500, 3000)) +
-  ggtitle("Bitcoin Daily Price",
+  ggtitle("Bitcoin Price",
           subtitle = "experienced the greatest surge in history this year") +
   labs(caption = "Data source: Coinbase API") +
   annotate(geom="text",
@@ -129,7 +133,7 @@ line <- ggplot(data=coinbase_lim) +
 line
 ```
 
-# Narrative:
+### Bitcoin price is volatile
 The price of bitcoin can increase or decrease drastically over a
 short period of time. This graph mainly serves as a priliminary 
 clue to pinpoint certain time points where a new policy may have
@@ -179,7 +183,7 @@ hist <- ggplot(data=nodes, aes(reorder(factor(country), node), node)) +
 hist
 ```
 
-# Narrative:
+### Which countries are more crytocurrency-friendly?
 Countries that have more reachable nodes means more people in
 the countries are involved in Bitcoin mining, which indicates
 that these countries are more likely to have policies,
@@ -194,7 +198,7 @@ advancement, or even perceived internet presence.
 
 \pagebreak
 
-## Graph Three - stacked area graph
+## Graph Three - stacked area
 ```{r, echo=FALSE, include=FALSE, result="hide"}
 ts <- xts(coinbase_lim$volume_usd, as.Date(coinbase_lim$unix_timestamp, "%Y-%m-%d"))
 ts_d = apply.daily(ts, FUN=sum)
@@ -250,14 +254,14 @@ area <- ggplot(data=agg, aes(x = as.POSIXct(date), y = volume, fill = as.factor(
         axis.ticks.x = element_blank(),
         axis.text.x = element_text(size=10, family = "mono", colour = "#666666"),
         legend.title = element_blank(),
-        legend.position = c(0.1, 0.9),
+        legend.position = c(0.05, 0.95),
         plot.caption = element_text(size=11, family = "mono", colour = "#666666"),
         plot.margin = unit(c(2,2,2,2), "cm"))
 
 area
 ```
 
-# Narrative:
+### High Trading Volume Volatility:
 In this graph, we can see that bitcoin's daily trading volume is extremely
 volatile, perhaps even more so than its price. This level of volatility can
 be a sign for market manipulation, especially given Bitcoin's young economy,
@@ -276,7 +280,7 @@ soc <- read_csv("./data/soc-sign-bitcoinotc.csv", col_names = c("rater", "ratee"
 # View in full screen for clarity.
 heatmap <- ggplot(soc, aes(x=rater, y=ratee, fill=score)) + geom_tile() +
   scale_fill_distiller(type="div", palette = "RdYlBu") +
-  ggtitle("The who-trusts-whom nework of Bitcoin trader on a platform called Bitcoin OTC",
+  ggtitle("The trust nework of Bitcoin traders on a platform called Bitcoin OTC",
           subtitle = "is sparse and unregulated") +
   labs(caption = "Data source: Bitcoin OTC trust network by Stanford University") +
   theme(panel.grid.major.y = element_blank(),
@@ -293,15 +297,16 @@ heatmap <- ggplot(soc, aes(x=rater, y=ratee, fill=score)) + geom_tile() +
         axis.ticks.x = element_blank(),
         axis.text.x = element_text(size=10, family = "mono", colour = "#666666"),
         legend.title = element_text(),
-        legend.position = c(0, 0),
+        legend.position = c(0.1, 0.9),
         plot.caption = element_text(size=11, family = "mono", colour = "#666666"),
         plot.margin = unit(c(2,2,2,2), "cm"))
 heatmap
 ```
 
-# Narrative:
+### The Who-trust-whom Network:
 While sparse and barely visible, this graph does provide some
 insights about the Bitcoin market. First, it allows us to identify
+
 some super raters and ratees, who are more likely to be the major
 player capable of manipulating Bitcoin price. Second, although orange
 (trustworthy) is more prevalent, there are quite a few blue spots 
@@ -311,9 +316,9 @@ underscores its unregulated nature.
 
 \pagebreak
 
-## Graph Five: long-term user network
+### Graph Five: long-term user network
 
-# Narrative:
+### Low Liquidity:
 This is a graph that visualizes the transaction activities of several
 thousand long-term Bitcoin users during 2009 - 2013. We can see that
 the majority is inactive, with one user radiating assets to many others,
@@ -324,20 +329,19 @@ while the technological philosophy of Bitcoin is decentralization,
 its ownership and commercial activity is very much the opposite.
 
 
-
-### Graph Five: network
-```{r, echo=FALSE, include=FALSE, result="hide"}
+```{r, echo=FALSE, include=FALSE}
 links <- read_tsv("./data/lt_graph_ELTE.txt", col_names = c("sender", "recipient", "transaction_timestamp"))
-net <- graph_from_data_frame(d=links, directed = T)
+
 ```
 
-```{r}
+```{r, eval=FALSE, echo=FALSE}
 # ISSUE: cannot knit this chunk.
+net <- graph_from_data_frame(d=links, directed = T)
 
 # set color
 col.1 <- adjustcolor("#666666", alpha=0.4)
 col.2 <- adjustcolor("#000000", alpha=0.4)
-edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
+edge.pal <- colorRampPalette(c(col.1, col.2))#, alpha = TRUE)
 edge.col <- edge.pal(100)
 
 colrs_transparent <- adjustcolor("#FFFFFF", alpha=0)
@@ -354,7 +358,7 @@ plot(net,
      edge.color=edge.col,
      main="The majority of long-term Bitcoin users does not engage in transaction",
      sub="Data source: ELTE Bitcoin Project website and resources (2009 - 2013)",
-     output.mode='inline'
+#     output.mode='inline'
      )
 legend(x=-0.3, y=-1.1, c("long-term bitcoin user"), col="#FF9900", pch=21, pt.bg="#FF9900")
 ```
