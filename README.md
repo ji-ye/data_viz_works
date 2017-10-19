@@ -36,3 +36,9 @@ Explorative Data Visualization: Five graph with narratives.
 <br /> http://www.vo.elte.hu/bitcoin/downloads.htm)
 
 <br/>
+
+## Week 4
+Theme & design of static visualizations.
+### Data source:
+1. sources from previous weeks
+2. tbd.
