@@ -3,8 +3,9 @@ Ji, Ye 吉也
 
 <br/>
 <br/>
+
 ## output
-output generated each week. Note there is none for week 1.
+stores output generated each week. Note there is none for week 1.
 
 <br/>
 
