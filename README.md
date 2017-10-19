@@ -3,9 +3,12 @@ Ji, Ye 吉也
 
 <br/>
 <br/>
+## output
+output generated each week. Note there is none for week 1.
 
+<br/>
 
-## Week 1
+## week1_tutorial_script.R
 Intro to R: Exploratory data task using traffic fatality data.
 ### Data source:
 1. 2015 accident dataset, found at:
@@ -15,8 +18,7 @@ Intro to R: Exploratory data task using traffic fatality data.
 
 <br/>
 
-
-## Week 2
+## week2_three_charts.Rmd
 Intro to ggplot2: Two scales, three charts, four geoms, five aesthetics/non-aesthetic options.
 ### Data source:
 1. Bitcoin price & volume traded on Coinbase (2015 - 2017 July), found at:
@@ -26,7 +28,7 @@ Intro to ggplot2: Two scales, three charts, four geoms, five aesthetics/non-aest
 
 <br/>
 
-## Week  3
+## week3_explorative_dataviz_short_paper.Rmd
 Explorative Data Visualization: Five graphs with narratives.
 ### Data source:
 1. Week 2 sources
