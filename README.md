@@ -42,3 +42,7 @@ Theme & design of static visualizations.
 ### Data source:
 1. sources from previous weeks
 2. tbd.
+
+### Reference:
+1. Cryptocurrency regulation. Cross-country analysis, found at:
+<br/> https://medium.com/blackmoon-crypto/cryptocurrency-regulation-cross-country-analysis-67452f1df80e
