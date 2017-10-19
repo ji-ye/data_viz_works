@@ -11,7 +11,7 @@ stores output generated each week. Note there is none for week 1.
 
 ## week1_tutorial_script.R
 Intro to R: Exploratory data task using traffic fatality data.
-### Data source:
+#### Data source:
 1. 2015 accident dataset, found at:
 <br /> ftp://ftp.nhtsa.dot.gov/FARS/2015/National/
 2. 2014 accident dataset, found at:
@@ -21,7 +21,7 @@ Intro to R: Exploratory data task using traffic fatality data.
 
 ## week2_three_charts.Rmd
 Intro to ggplot2: Two scales, three charts, four geoms, five aesthetics/non-aesthetic options.
-### Data source:
+#### Data source:
 1. Bitcoin price & volume traded on Coinbase (2015 - 2017 July), found at:
 <br /> https://api.bitcoincharts.com/v1/csv/coinbaseUSD.csv.gz
 2. Reachable nodes by countries statistics from BitNodes, found at:
@@ -31,7 +31,7 @@ Intro to ggplot2: Two scales, three charts, four geoms, five aesthetics/non-aest
 
 ## week3_explorative_dataviz_short_paper.Rmd
 Explorative Data Visualization: Five graphs with narratives.
-### Data source:
+#### Data source:
 1. Week 2 sources
 2. Bitcoin Alpha Trust Network from SNAP, found at:
 <br /> https://snap.stanford.edu/data/soc-sign-bitcoinalpha.html)
@@ -42,10 +42,10 @@ Explorative Data Visualization: Five graphs with narratives.
 
 ## Week 4
 Theme & design of static visualizations.
-### Data source:
+#### Data source:
 1. sources from previous weeks
 2. tbd.
 
-### Reference:
+#### Reference:
 1. Cryptocurrency regulation. Cross-country analysis, found at:
 <br/> https://medium.com/blackmoon-crypto/cryptocurrency-regulation-cross-country-analysis-67452f1df80e
