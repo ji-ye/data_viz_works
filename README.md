@@ -27,7 +27,7 @@ Intro to ggplot2: Two scales, three charts, four geoms, five aesthetics/non-aest
 <br/>
 
 ## Week  3
-Explorative Data Visualization: Five graph with narratives.
+Explorative Data Visualization: Five graphs with narratives.
 ### Data source:
 1. Week 2 sources
 2. Bitcoin Alpha Trust Network from SNAP, found at:
