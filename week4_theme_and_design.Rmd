@@ -1,0 +1,37 @@
+---
+title: "Theme and Design of Static Visualizations"
+author: "Ji, Ye"
+date: "10/20/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+install.packages("easypackages", repos = "http://cran.us.r-project.org")
+library(easypackages)
+packages("anytime","tidyverse","rmarkdown","readr", "haven", "dplyr", "stringr", "ggplot2", "xts", "igraph", "extrafont")
+
+theme_JiYe <- theme(panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.background = element_blank(),
+        plot.title = element_text(size=18,
+                                  family = "Helvetica",
+                                  colour = "#3a3a3a",
+                                  face = "bold"),
+        plot.subtitle = element_text(size=12, family = "mono", colour = "#666666"),
+        axis.text.y = element_text(color="#325a8c"),
+        axis.title.y = element_text(color="#325a8c"),
+        axis.ticks.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank(),
+        legend.position = "none",
+        plot.caption = element_text(size=11, family = "mono", colour = "#666666"),
+        plot.margin = unit(c(2,2,2,2), "cm"))
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
