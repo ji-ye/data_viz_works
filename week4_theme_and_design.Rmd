@@ -1,5 +1,5 @@
 ---
-title: "Theme and Design"
+title: "Theme & Design"
 author: "Ji, Ye"
 date: "10/20/2017"
 output:
@@ -67,7 +67,7 @@ countries. Central Banks are issuing experimental policies in response to
 the dessemination of digital currency and blockchain technology.
     
 This paper will explore some data sources published by major Bitcoin exchanges and platforms as an market overview.
-<br/>
+
 
 ``` {r}
 rectangle <- data.frame(xmin = as.POSIXct(c("2017-03-25")),
@@ -120,8 +120,7 @@ line + geom_rect(data = rectangle, aes(xmin = xmin, xmax = xmax, ymin = ymin, ym
 
 The price of bitcoin can increase or decrease drastically over a
 short period of time. This graph mainly serves as a priliminary 
-clue to pinpoint certain time points where a new policy may have
-impacted the price of Bitcoin, or vice versa. And potentially, 
-this graph could be used to find global price trend correlations.
+evidence to pinpoint certain time points where a new policy or
+event may have impacted the price of Bitcoin.
 
 <br/>
