@@ -10,12 +10,12 @@ btc_price <- mutate(btc_price, Date = as.POSIXct(Date))
 theme_jiye <- theme(panel.grid.major.y =element_line( size=.1, color="#999999"),
                     panel.grid.major.x = element_blank(),
                     panel.background = element_blank(),
-                    plot.title = element_text(size=18,
+                    plot.title = element_text(size=28,
                                               family = "Helvetica",
                                               colour = "#3a3a3a",
                                               face = "bold"),
-                    plot.subtitle = element_text(size=12,
-                                                 family = "mono",
+                    plot.subtitle = element_text(size=10,
+                                                 family = "Avenir",
                                                  colour = "#666666"),
                     axis.title.y = element_text(colour="#325a8c"),
                     axis.text.y = element_text(colour="#325a8c"),
@@ -23,10 +23,11 @@ theme_jiye <- theme(panel.grid.major.y =element_line( size=.1, color="#999999"),
                     axis.ticks.y = element_blank(),
                     axis.ticks.x = element_blank(),
                     legend.position = "none",
-                    plot.caption = element_text(size=11,
-                                                family = "mono",
+                    plot.caption = element_text(size=8,
+                                                family = "Avenir",
                                                 colour = "#666666",
-                                                hjust = 0),
+                                                hjust = 0
+                                                ),
                     plot.margin = unit(c(2,2,2,2), "cm"))
 
 # graph 1 - line
@@ -41,6 +42,7 @@ line <- ggplot(data=btc_price) +
   geom_vline(xintercept = as.POSIXct("2017-03-25"),
              colour="#ff7575",
              size=.5,
+             linetype="dotted",
              alpha=.75) +
   geom_smooth(aes(Date, Value),
               size=0.5,
@@ -59,12 +61,13 @@ line <- ggplot(data=btc_price) +
           subtitle = "experienced the greatest surge in history this year") +
   labs(caption = "Source: Blockchain.com") +
   annotate(geom="text",
-           x=as.POSIXct("2015-09-11"),
+           x=as.POSIXct("2015-05-05"),
            y=2200,
-           label="2017-03-25 Surge starts",
+           label="Surge started on Mar 25, 2017",
            colour="#ff7575",
+           family="Avenir",
            fontface="bold",
-           alpha=.85) +
+           alpha=1) +
   theme_jiye
 
 line + geom_rect(data = rectangle, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
