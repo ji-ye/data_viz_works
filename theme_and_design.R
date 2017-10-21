@@ -30,33 +30,42 @@ theme_jiye <- theme(panel.grid.major.y =element_line( size=.1, color="#999999"),
                     plot.margin = unit(c(2,2,2,2), "cm"))
 
 # graph 1 - line
+rectangle <- data.frame(xmin = as.POSIXct(c("2017-03-25")),
+                        xmax = as.POSIXct(c("2017-10-21")),
+                        ymin = -Inf, ymax = Inf)
+
 line <- ggplot(data=btc_price) +
   geom_line(size=.25,
             aes(Date, Value),
             color="#325a8c") +
   geom_vline(xintercept = as.POSIXct("2017-03-25"),
              colour="#ff7575",
-             size=.75,
+             size=.5,
              alpha=.75) +
   geom_smooth(aes(Date, Value),
-              span=2,
-              linetype="longdash",
-              color="#4c88d3",
-              alpha=.5) +
+              size=0.5,
+              alpha=0.1,
+              span=0.5,
+              color="#325a8c",
+              linetype="twodash"
+              ) +
   scale_x_datetime(name = "",
-                   date_breaks = "3 month") +
-  scale_y_continuous(name ="Bitcoin Hourly Exchange Rate in USD",
-                     breaks = (seq(0,6000,1000))) +
+                   date_breaks = "3 month",
+                   expand = c(0,0)) +
+  scale_y_continuous(name ="Bitcoin Market Price in USD",
+                     breaks = (seq(0,6000,1000)),
+                     expand = c(0,0)) +
   ggtitle("Bitcoin Price",
           subtitle = "experienced the greatest surge in history this year") +
   labs(caption = "Source: Blockchain.com") +
   annotate(geom="text",
-           x=as.POSIXct("2017-05-30"),
-           y=675,
+           x=as.POSIXct("2015-09-11"),
+           y=2200,
            label="2017-03-25 Surge starts",
            colour="#ff7575",
            fontface="bold",
            alpha=.85) +
   theme_jiye
 
-line
+line + geom_rect(data = rectangle, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+                 fill = "#ff7575", alpha = 0.1)

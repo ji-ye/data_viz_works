@@ -13,7 +13,7 @@ install.packages("easypackages", repos = "http://cran.us.r-project.org")
 library(easypackages)
 packages("anytime","tidyverse","rmarkdown","readr", "haven", "dplyr", "stringr", "ggplot2", "xts", "igraph", "extrafont")
 
-theme_JiYe <- theme(panel.grid.major.y = element_blank(),
+theme_jiye <- theme(panel.grid.major.y = element_blank(),
         panel.grid.major.x = element_blank(),
         panel.background = element_blank(),
         plot.title = element_text(size=18,
