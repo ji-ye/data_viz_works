@@ -4,7 +4,7 @@ author: "Ji, Ye"
 date: "10/20/2017"
 output:
   html_document:
-    fig_width: 12
+    fig_width: 9
 ---
 
 ```{r setup, include=FALSE}
@@ -84,13 +84,13 @@ line <- ggplot(data=btc_price) +
              size=.5,
              linetype="dotted",
              alpha=.75) +
-  geom_smooth(aes(Date, Value),
-              size=0.5,
-              alpha=0.1,
-              span=0.5,
-              color="#325a8c",
-              linetype="twodash"
-              ) +
+#  geom_smooth(aes(Date, Value),
+#              size=0.5,
+#              alpha=0.1,
+#              span=0.5,
+#              color="#325a8c",
+#              linetype="twodash"
+#              ) +
   scale_y_continuous(name ="Bitcoin Market Price in USD",
                      breaks = (seq(0,6000,1000))
                      ) +
@@ -101,7 +101,7 @@ line <- ggplot(data=btc_price) +
           subtitle = "experienced the greatest surge in history this year") +
   labs(caption = "Source: Blockchain.com") +
   annotate(geom="text",
-           x=as.POSIXct("2016-05-01"),
+           x=as.POSIXct("2016-01-01"),
            y=2200,
            label="Surge started on Mar 25, 2017",
            colour="#ff7575",
