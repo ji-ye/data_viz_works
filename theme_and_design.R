@@ -10,25 +10,26 @@ btc_price <- mutate(btc_price, Date = as.POSIXct(Date))
 theme_jiye <- theme(panel.grid.major.y =element_line( size=.1, color="#999999"),
                     panel.grid.major.x = element_blank(),
                     panel.background = element_blank(),
-                    plot.title = element_text(size=28,
+                    plot.title = element_text(size=24,
                                               family = "Helvetica",
                                               colour = "#3a3a3a",
                                               face = "bold"),
-                    plot.subtitle = element_text(size=10,
+                    plot.subtitle = element_text(size=12,
                                                  family = "Avenir",
                                                  colour = "#666666"),
                     axis.title.y = element_text(colour="#325a8c"),
+                    axis.title.x = element_blank(),
                     axis.text.y = element_text(colour="#325a8c"),
-                    axis.text.x = element_blank(),
+#                    axis.text.x = element_blank(),
                     axis.ticks.y = element_blank(),
-                    axis.ticks.x = element_blank(),
+#                    axis.ticks.x = element_blank(),
                     legend.position = "none",
                     plot.caption = element_text(size=8,
                                                 family = "Avenir",
                                                 colour = "#666666",
                                                 hjust = 0
                                                 ),
-                    plot.margin = unit(c(2,2,2,2), "cm"))
+                    plot.margin = unit(c(1,1,1,1), "cm"))
 
 # graph 1 - line
 rectangle <- data.frame(xmin = as.POSIXct(c("2017-03-25")),
@@ -51,17 +52,17 @@ line <- ggplot(data=btc_price) +
               color="#325a8c",
               linetype="twodash"
               ) +
-  scale_x_datetime(name = "",
-                   date_breaks = "3 month",
-                   expand = c(0,0)) +
   scale_y_continuous(name ="Bitcoin Market Price in USD",
-                     breaks = (seq(0,6000,1000)),
-                     expand = c(0,0)) +
+                     breaks = (seq(0,6000,1000))
+                     ) +
+  scale_x_datetime(date_breaks = "1 year",
+                   labels = seq(2009,2018,1),
+                   expand=c(0,0)) +
   ggtitle("Bitcoin Price",
           subtitle = "experienced the greatest surge in history this year") +
   labs(caption = "Source: Blockchain.com") +
   annotate(geom="text",
-           x=as.POSIXct("2015-05-05"),
+           x=as.POSIXct("2016-05-01"),
            y=2200,
            label="Surge started on Mar 25, 2017",
            colour="#ff7575",

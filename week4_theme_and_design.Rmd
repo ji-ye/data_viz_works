@@ -1,37 +1,127 @@
 ---
-title: "Theme and Design of Static Visualizations"
+title: "Theme and Design"
 author: "Ji, Ye"
 date: "10/20/2017"
-output: html_document
+output:
+  html_document:
+    fig_width: 12
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r, echo=TRUE, include=FALSE}
+# install packages.
 install.packages("easypackages", repos = "http://cran.us.r-project.org")
 library(easypackages)
-packages("anytime","tidyverse","rmarkdown","readr", "haven", "dplyr", "stringr", "ggplot2", "xts", "igraph", "extrafont")
+packages("anytime","tidyverse","rmarkdown","readr", "haven", "dplyr", "stringr", "ggplot2", "xts", "igraph")
 
-theme_jiye <- theme(panel.grid.major.y = element_blank(),
-        panel.grid.major.x = element_blank(),
-        panel.background = element_blank(),
-        plot.title = element_text(size=18,
-                                  family = "Helvetica",
-                                  colour = "#3a3a3a",
-                                  face = "bold"),
-        plot.subtitle = element_text(size=12, family = "mono", colour = "#666666"),
-        axis.text.y = element_text(color="#325a8c"),
-        axis.title.y = element_text(color="#325a8c"),
-        axis.ticks.y = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.x = element_blank(),
-        legend.position = "none",
-        plot.caption = element_text(size=11, family = "mono", colour = "#666666"),
-        plot.margin = unit(c(2,2,2,2), "cm"))
+# load data
+btc_price = read_csv("./data/BCHAIN-MKPRU.csv")
+btc_price <- mutate(btc_price, Date = as.POSIXct(Date))
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+# set theme
+theme_jiye <- theme(panel.grid.major.y =element_line( size=.1, color="#999999"),
+                    panel.grid.major.x = element_blank(),
+                    panel.background = element_blank(),
+                    plot.title = element_text(size=24,
+                                              family = "Helvetica",
+                                              colour = "#3a3a3a",
+                                              face = "bold"),
+                    plot.subtitle = element_text(size=12,
+                                                 family = "Avenir",
+                                                 colour = "#666666"),
+                    axis.title.y = element_text(colour="#325a8c"),
+                    axis.title.x = element_blank(),
+                    axis.text.y = element_text(colour="#325a8c"),
+#                    axis.text.x = element_blank(),
+                    axis.ticks.y = element_blank(),
+#                    axis.ticks.x = element_blank(),
+                    legend.position = "none",
+                    plot.caption = element_text(size=8,
+                                                family = "Avenir",
+                                                colour = "#666666",
+                                                hjust = 0
+                                                ),
+                    plot.margin = unit(c(1,1,1,1), "cm"))
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+### Introduction
+
+There are several advantages to dedicate a data visualization portfolio and 10-week effort to digital currency:
+
+* Massive and Robust data source: Blockchain is a public transaction log
+  that exists as a distributed database, validated by its powerful algorithm.
+    
+* Fitting data types: Blockchain data includes time and IP addresses, and 
+  can be updated frequently, which means it is useful for both the static and
+  dynamic data visualizations.
+    
+* Well-supported: I can save the entire blockchain file locally,use 
+  community-maintained tools to parse it, and keep the data up-to-date.
+    
+* Policy-setting: Digital currencies are being used as store of value to 
+fight inflation in turbulent economies such as Zimbabwe and Latin American
+countries. Central Banks are issuing experimental policies in response to 
+the dessemination of digital currency and blockchain technology.
+    
+This paper will explore some data sources published by major Bitcoin exchanges and platforms as an market overview.
+<br/>
+
+``` {r}
+rectangle <- data.frame(xmin = as.POSIXct(c("2017-03-25")),
+                        xmax = as.POSIXct(c("2017-10-21")),
+                        ymin = -Inf,
+                        ymax = Inf)
+
+line <- ggplot(data=btc_price) +
+  geom_line(size=.25,
+            aes(Date, Value),
+            color="#325a8c") +
+  geom_vline(xintercept = as.POSIXct("2017-03-25"),
+             colour="#ff7575",
+             size=.5,
+             linetype="dotted",
+             alpha=.75) +
+  geom_smooth(aes(Date, Value),
+              size=0.5,
+              alpha=0.1,
+              span=0.5,
+              color="#325a8c",
+              linetype="twodash"
+              ) +
+  scale_y_continuous(name ="Bitcoin Market Price in USD",
+                     breaks = (seq(0,6000,1000))
+                     ) +
+  scale_x_datetime(date_breaks = "1 year",
+                   labels = seq(2009,2018,1),
+                   expand=c(0,0)) +
+  ggtitle("Bitcoin Price",
+          subtitle = "experienced the greatest surge in history this year") +
+  labs(caption = "Source: Blockchain.com") +
+  annotate(geom="text",
+           x=as.POSIXct("2016-05-01"),
+           y=2200,
+           label="Surge started on Mar 25, 2017",
+           colour="#ff7575",
+           family="Avenir",
+           fontface="bold",
+           alpha=1) +
+  theme_jiye
+
+line + geom_rect(data = rectangle, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+                 fill = "#ff7575", alpha = 0.1)
+```
+
+<br/>
+
+### Bitcoin price is volatile
+
+The price of bitcoin can increase or decrease drastically over a
+short period of time. This graph mainly serves as a priliminary 
+clue to pinpoint certain time points where a new policy may have
+impacted the price of Bitcoin, or vice versa. And potentially, 
+this graph could be used to find global price trend correlations.
+
+<br/>
