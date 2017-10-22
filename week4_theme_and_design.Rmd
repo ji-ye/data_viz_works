@@ -6,7 +6,6 @@ output:
   html_document:
     code_folding: hide
     fig_width: 9
-      
 ---
 
 ```{r setup, include=FALSE}
@@ -17,11 +16,21 @@ knitr::opts_chunk$set(echo = TRUE)
 # install packages.
 install.packages("easypackages", repos = "http://cran.us.r-project.org")
 library(easypackages)
-packages("anytime","tidyverse","rmarkdown","readr", "haven", "dplyr", "stringr", "ggplot2", "xts", "igraph")
+packages("anytime","tidyverse","rmarkdown","readr", "haven", "dplyr", "stringr", "ggplot2", "xts", "igraph", "countrycode")
 
-# load data
+# Load data
+# - graph one
 btc_price = read_csv("./data/BCHAIN-MKPRU.csv")
 btc_price <- mutate(btc_price, Date = as.POSIXct(Date))
+
+# - graph two
+nodes = read_csv("./data/20171021_nodes.csv")
+nodes <- mutate(nodes, country = countrycode(country_code,
+                                             origin="iso2c",
+                                             destination = "country.name.en"))
+country_list <- table(nodes$country)
+country_list <- as.data.frame(country_list)
+colnames(country_list) = c('country', 'node')
 
 # set theme
 theme_jiye <- theme(panel.grid.major.y =element_line( size=.1, color="#999999"),
@@ -70,6 +79,7 @@ the dessemination of digital currency and blockchain technology.
     
 This paper will explore some data sources published by major Bitcoin exchanges and platforms as an market overview.
 
+### Graph one
 
 ``` {r, dpi=300}
 rectangle <- data.frame(xmin = as.POSIXct(c("2017-03-25")),
@@ -86,13 +96,6 @@ line <- ggplot(data=btc_price) +
              size=.5,
              linetype="dotted",
              alpha=.75) +
-#  geom_smooth(aes(Date, Value),
-#              size=0.5,
-#              alpha=0.1,
-#              span=0.5,
-#              color="#325a8c",
-#              linetype="twodash"
-#              ) +
   scale_y_continuous(name ="Bitcoin Market Price in USD",
                      breaks = (seq(0,6000,1000))
                      ) +
@@ -126,3 +129,63 @@ evidence to pinpoint certain time points where a new policy or
 event may have impacted the price of Bitcoin.
 
 <br/>
+
+### Graph two
+```{r, dpi=300, fig.asp=2}
+theme_jiye <- theme(panel.grid.major.y = element_blank(),
+                    panel.grid.major.x = element_blank(),
+                    panel.background = element_blank(),
+                    plot.title = element_text(size=18,
+                                              family = "Helvetica",
+                                              colour = "#3a3a3a",
+                                              face = "bold"),
+                    plot.subtitle = element_text(size=12,
+                                                 family = "Avenir",
+                                                 colour = "#666666"),
+                    axis.title.y = element_text(colour="#325a8c"),
+                    axis.title.x = element_blank(),
+                    axis.text.y = element_text(colour="#325a8c"),
+#                    axis.text.x = element_blank(),
+                    axis.ticks.y = element_blank(),
+#                    axis.ticks.x = element_blank(),
+                    legend.position = "none",
+                    plot.caption = element_text(size=8,
+                                                family = "Avenir",
+                                                colour = "#666666",
+                                                hjust = 0
+                                                ),
+                    plot.margin = unit(c(1,1,1,1), "cm"))
+
+hist <- ggplot(data=country_list, aes(reorder(factor(country), node), node)) +
+  geom_col(width=0.9, position=position_dodge(width=5), fill = "#999999") +
+  geom_text(aes(label=node),
+            color="#666666",
+            position=position_dodge(width=0.9),
+            vjust=0.35,
+            hjust=-.25
+  ) +
+  ggtitle("Bitcoin Nodes Distribution by Countries",
+          subtitle = "Number of reachable nodes as of Oct 21, 2017") +
+  ylab("") +
+  xlab("") +
+  labs(caption = "Data source: BitNodes.21.co") +
+  theme_jiye +
+  scale_x_discrete(expand=c(0,0)) +
+  coord_flip()
+
+hist
+```
+### Which countries are more crytocurrency-friendly?
+Countries that have more reachable nodes means more people in
+the countries are involved in Bitcoin mining, which indicates
+that these countries are more likely to have policies,
+or the lack of, to support the development of cryptocurrency.
+For an explorative analysis, this graph is helpful for narrowing
+down the origin of some major policies that have shaped the 
+development of Bitcoin. If we consider this graph as a ranking
+of countries' involvement in digital currency. It is interesting
+to note that, this ranking is not necessarily ordered in exact 
+accordance with the ranking of GDP, population, technological
+advancement, or even perceived internet presence.
+
+## Graph Three - stacked area
