@@ -129,6 +129,8 @@ evidence to pinpoint certain time points where a new policy or
 event may have impacted the price of Bitcoin.
 
 <br/>
+------------------------------------
+<br/>
 
 ### Graph two
 ```{r, dpi=300, fig.asp=2}
@@ -168,14 +170,16 @@ hist <- ggplot(data=country_list, aes(reorder(factor(country), node), node)) +
           subtitle = "Number of reachable nodes as of Oct 21, 2017") +
   ylab("") +
   xlab("") +
-  labs(caption = "Data source: BitNodes.21.co") +
+  labs(caption = "Source: BitNodes") +
   theme_jiye +
   scale_x_discrete(expand=c(0,0)) +
   coord_flip()
 
 hist
 ```
+
 ### Which countries are more crytocurrency-friendly?
+
 Countries that have more reachable nodes means more people in
 the countries are involved in Bitcoin mining, which indicates
 that these countries are more likely to have policies,
@@ -187,5 +191,9 @@ of countries' involvement in digital currency. It is interesting
 to note that, this ranking is not necessarily ordered in exact 
 accordance with the ranking of GDP, population, technological
 advancement, or even perceived internet presence.
+
+<br/>
+------------------------------------
+<br/>
 
 ## Graph Three - stacked area
