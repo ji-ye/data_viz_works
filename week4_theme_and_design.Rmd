@@ -14,25 +14,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, echo=TRUE, include=FALSE}
 # install packages.
-install.packages("easypackages", repos = "http://cran.us.r-project.org")
+#install.packages("easypackages", repos = "http://cran.us.r-project.org")
 library(easypackages)
 packages("anytime","tidyverse","rmarkdown","readr", "haven", "dplyr", "stringr", "ggplot2", "xts", "igraph", "countrycode")
 
-# Load data
-# - graph one
-btc_price = read_csv("./data/BCHAIN-MKPRU.csv")
-btc_price <- mutate(btc_price, Date = as.POSIXct(Date))
-
-# - graph two
-nodes = read_csv("./data/20171021_nodes.csv")
-nodes <- mutate(nodes, country = countrycode(country_code,
-                                             origin="iso2c",
-                                             destination = "country.name.en"))
-country_list <- table(nodes$country)
-country_list <- as.data.frame(country_list)
-colnames(country_list) = c('country', 'node')
-
-# set theme
+# set master theme
 theme_jiye <- theme(panel.grid.major.y =element_line( size=.1, color="#999999"),
                     panel.grid.major.x = element_blank(),
                     panel.background = element_blank(),
@@ -56,6 +42,40 @@ theme_jiye <- theme(panel.grid.major.y =element_line( size=.1, color="#999999"),
                                                 hjust = 0
                                                 ),
                     plot.margin = unit(c(1,1,1,1), "cm"))
+
+# Load data
+#   graph one data
+btc_price = read_csv("./data/BCHAIN-MKPRU.csv")
+btc_price <- mutate(btc_price, Date = as.POSIXct(Date))
+
+#   graph two data
+nodes = read_csv("./data/20171021_nodes.csv")
+nodes <- mutate(nodes, country = countrycode(country_code,
+                                             origin="iso2c",
+                                             destination = "country.name.en"))
+country_list <- table(nodes$country)
+country_list <- as.data.frame(country_list)
+colnames(country_list) = c('country', 'node')
+
+#   graph three data
+# note: this graph should show correlation between price rise with buying interests.
+# get trading volume by coin by left_join volume_usd with price
+volume_usd <- read_csv("./data/20171018_Bitcoin USD Exchange Trading Volume.csv")
+volume_usd <- mutate(volume_usd, Date = as.POSIXct(Date))
+volume_usd$unit <- "USD"
+
+#volume_usd <- mutate(volume_coin, unit = "USD")
+
+agg <- left_join(x=volume_usd, y=btc_price, by="Date")
+colnames(agg) <- c("Date", "volume_usd", "price_usd")
+agg <- mutate(agg, volume_coin = volume_usd/price_usd)
+# ISSUE: what is difference betwen <- and = ?
+colnames(volume_agg) <- c("Date", "volume_coin", "volume_usd")
+
+#   graph four data
+#   graph five data
+#   graph six data
+#   graph seven data
 ```
 
 ### Introduction
@@ -129,12 +149,10 @@ evidence to pinpoint certain time points where a new policy or
 event may have impacted the price of Bitcoin.
 
 <br/>
-------------------------------------
-<br/>
 
 ### Graph two
 ```{r, dpi=300, fig.asp=2}
-theme_jiye <- theme(panel.grid.major.y = element_blank(),
+theme_graph2 <- theme(panel.grid.major.y = element_blank(),
                     panel.grid.major.x = element_blank(),
                     panel.background = element_blank(),
                     plot.title = element_text(size=18,
@@ -171,18 +189,18 @@ hist <- ggplot(data=country_list, aes(reorder(factor(country), node), node)) +
   ylab("") +
   xlab("") +
   labs(caption = "Source: BitNodes") +
-  theme_jiye +
+  theme_graph2 +
   scale_x_discrete(expand=c(0,0)) +
   coord_flip()
 
 hist
 ```
 
-### Which countries are more crytocurrency-friendly?
+### (REWRITE THIS) Which countries are more crytocurrency-friendly?
 
 Countries that have more reachable nodes means more people in
-the countries are involved in Bitcoin mining, which indicates
-that these countries are more likely to have policies,
+the countries are involved in maintaining the bitcoin network,
+which indicates that these countries are more likely to have policies,
 or the lack of, to support the development of cryptocurrency.
 For an explorative analysis, this graph is helpful for narrowing
 down the origin of some major policies that have shaped the 
@@ -193,7 +211,39 @@ accordance with the ranking of GDP, population, technological
 advancement, or even perceived internet presence.
 
 <br/>
-------------------------------------
-<br/>
 
 ## Graph Three - stacked area
+
+```{r, fig.width = 16, fig.height = 12}
+# note: color #85bb65 is nicknamed as "dollar bill green".
+#       color #FF9900 is the orange from bitcoin logo.
+area <- ggplot(data=volume_agg, aes(x = as.POSIXct(Date), y = volume_usd, fill = as.factor(unit))) +
+  geom_area(position = "stack") +
+  scale_x_datetime(date_breaks = "3 months", expand=c(0,0)) +
+  scale_y_continuous(breaks = c(0, 250, 500, 750, 1000, 2000, 3000)) + 
+  scale_fill_manual(values = alpha(c("#FF9900", "#85bb65")), 0.2) +
+  ggtitle("Bitcoin Daily Trading Volume",
+          subtitle = "in number of bitcoin & Thousands of USD") +
+  labs(caption = "Data source: Coinbase API",
+       x = "",
+       y = "Volume") +
+  theme(panel.grid.major.y =element_line( size=.1, color="#999999"),
+        panel.grid.major.x = element_blank(),
+        panel.background = element_blank(),
+        plot.title = element_text(size=18,
+                                  family = "Helvetica",
+                                  colour = "#3a3a3a",
+                                  face = "bold"),
+        plot.subtitle = element_text(size=12, family = "mono", colour = "#666666"),
+        axis.text.y = element_text(color="#666666"),
+        axis.title.y = element_text(color="#666666"),
+        axis.ticks.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_text(size=10, family = "mono", colour = "#666666"),
+        legend.title = element_blank(),
+        legend.position = c(0.05, 0.95),
+        plot.caption = element_text(size=11, family = "mono", colour = "#666666"),
+        plot.margin = unit(c(2,2,2,2), "cm"))
+
+area
+```
