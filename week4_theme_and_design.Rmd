@@ -20,43 +20,80 @@ knitr::include_graphics("lightroom_ji_round.jpg")
 # install packages
 install.packages("easypackages", repos = "http://cran.us.r-project.org")
 library(easypackages)
-packages("anytime","tidyverse","rmarkdown","readr", "haven", "dplyr", "stringr", "ggplot2", "xts", "igraph", "countrycode", "extrafont", "waffle",
-         "rworldmap", "maps")
+packages("anytime","tidyverse","rmarkdown","readr", "haven", "dplyr", "stringr", "ggplot2",
+         "xts", "igraph", "countrycode", "extrafont", "waffle", "maps")
 
-# set master theme
+# set themes
 # ISSUE: Not generalized enough.
-theme_jiye <- theme(panel.grid.major.y =element_line( size=.1, color="#999999"),
-                    panel.grid.major.x = element_blank(),
-                    panel.background = element_blank(),
-                    plot.title = element_text(size=24,
-                                              family = "Helvetica",
-                                              colour = "#3a3a3a",
-                                              face = "bold"),
-                    plot.subtitle = element_text(size=10,
-                                                 family = "Avenir",
-                                                 colour = "#666666"),
-                    axis.title.y = element_text(colour="#325a8c"),
-                    axis.title.x = element_blank(),
-                    axis.text.y = element_text(colour="#325a8c"),
-                    axis.text.x = element_text(size=12,
-                                                family = "Avenir",
-                                                colour = "#666666"
-                                                ),
-                    axis.ticks.y = element_blank(),
-                    legend.position = "none",
-                    plot.caption = element_text(size=8,
-                                                family = "Avenir",
-                                                colour = "#666666",
-                                                hjust = 0
-                                                ),
-                    plot.margin = unit(c(0,0,0,0), "cm"))
+# ISSUE: color scheme not consistent.
+theme_jiye <- theme(
+    panel.grid.major.y = element_line(size = .1, color = "#999999"),
+    panel.grid.major.x = element_blank(),
+    panel.background = element_blank(),
+    plot.title = element_text(size=24,
+                              family = "Helvetica",
+                              colour = "#3a3a3a",
+                              face = "bold"),
+    plot.subtitle = element_text(size=12,
+                                 family = "Avenir",
+                                 colour = "#666666"),
+    axis.title.y = element_text(colour="#325a8c"),
+    axis.title.x = element_blank(),
+    axis.text.y = element_text(colour="#325a8c"),
+    axis.text.x = element_text(size=12,
+                                family = "Avenir",
+                                colour = "#666666"),
+    axis.ticks.y = element_blank(),
+    legend.position = "none",
+    plot.caption = element_text(size=8,
+                                family = "Avenir",
+                                colour = "#666666",
+                                hjust = 0),
+    plot.margin = unit(c(0,0,0,0), "pt")
+)
+
+theme_map <- theme_jiye + theme(
+    panel.grid.major.y = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.text.x = element_blank(),
+    axis.ticks = element_blank(),
+    plot.margin = unit(c(5,0,0,0), "pt")
+)
+
+theme_percBar <- theme_jiye + theme(
+    panel.grid.major.y = element_blank(),
+    aspect.ratio = 0.05,
+    axis.title.y = element_blank(),
+    axis.text.x = element_text(hjust = 1,
+                               size = 10),
+    axis.line.x = element_line(),
+    plot.caption = element_text(size = 12),
+    plot.margin = unit(c(0, 5, 0, 5), "pt")
+)
+
+theme_volume <- theme_jiye + theme(
+    axis.title.y = element_text(colour = "#666666"),
+    axis.text.y = element_text(colour = "#666666"),
+    axis.title.x = element_text(size = 12,
+                                family = "Avenir",
+                                colour = "#666666")
+)
+
+theme_heatmap <- theme_jiye + theme(
+    panel.grid.major.y = element_blank(),
+    aspect.ratio = 1,
+    axis.title.y = element_text(colour = "#666666"),
+    axis.text.y = element_text(colour = "#666666"),
+    legend.position = c(0.1, 0.9)
+)
 
 # Load data
-#   graph one data
-btc_price = read_csv("./data/BCHAIN-MKPRU.csv") # as of 10-21
+# graph one data
+btc_price = read_csv("./data/BCHAIN-MKPRU.csv") # as of Oct 21
 btc_price <- mutate(btc_price, Date = as.POSIXct(Date))
 
-#   graph 2-1 data
+# graph 2-1 data
 nodes = read_csv("./data/20171021_nodes.csv")
 nodes <- mutate(nodes, country = countrycode(country_code,
                                              origin="iso2c",
@@ -85,7 +122,7 @@ nation_list <- c(`U.S.A (2962)`=2962,
 # Alternative graph 2-2 data
 top_country_nodes = read_csv("./data/country_list_topOnly.csv")
 
-#   graph three data
+# graph three data
 # ISSUE: Should update this dataset for all platforms.
 # note: this graph should show correlation between price rise with buying interests.
 # get trading volume by coin by left_join volume_usd with price
@@ -160,7 +197,7 @@ There are several advantages to dedicate a data visualization portfolio and 10-w
 * Policy-setting: Digital currencies are being used as store of value to 
 fight inflation in turbulent economies such as Zimbabwe and Latin American
 countries. Central Banks are issuing experimental policies in response to 
-the dessemination of digital currency and block chain technology.
+the dissemination of digital currency and block chain technology.
     
 Here I will explore some data sources published by major Bitcoin exchanges and platforms as an market overview.
 
@@ -192,8 +229,8 @@ line <- ggplot(data=btc_price) +
           subtitle = "experienced the greatest surge in history this year") +
   labs(caption = "Source: Blockchain.com") +
   annotate(geom="text",
-           x=as.POSIXct("2016-01-15"),
-           y=2200,
+           x=as.POSIXct("2016-01-25"),
+           y=2100,
            label="Surge started on Mar 25, 2017",
            colour="#ff7575",
            family="Avenir",
@@ -201,16 +238,17 @@ line <- ggplot(data=btc_price) +
            alpha=1) +
   theme_jiye
 
+# add surge bar
 line + geom_rect(data = rectangle, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
                  fill = "#ff7575", alpha = 0.1)
 ```
 
 <br/>
 
-### Bitcoin price is volatile
+### Bitcoin Price is Volatile
 
-The price of bitcoin can increase or decrease drastically over a
-short period of time. This graph mainly serves as a priliminary 
+The price of Bitcoin can increase or decrease drastically over a
+short period of time. This graph mainly serves as a preliminary 
 evidence to pinpoint certain time points where a new policy or
 event may have impacted the price of Bitcoin.
 
@@ -219,33 +257,9 @@ event may have impacted the price of Bitcoin.
 ```{r, dpi=200, fig.asp=.65}
 # graph 2-1: nodes map
 # map theme
-theme_map <- theme(panel.grid.major.y = element_blank(),
-                    panel.grid.major.x = element_blank(),
-                    panel.background = element_blank(),
-                    plot.title = element_text(size=24,
-                                              family = "Helvetica",
-                                              colour = "#3a3a3a",
-                                              face = "bold"),
-                    plot.subtitle = element_text(size=12,
-                                                 family = "Avenir",
-                                                 colour = "#666666"),
-                    axis.title.y = element_blank(),
-                    axis.title.x = element_blank(),
-                    axis.text.y = element_blank(),
-                    axis.text.x = element_blank(),
-                    axis.ticks.y = element_blank(),
-                                        axis.ticks.x = element_blank(),
-                    legend.position = "none",
-                    plot.caption = element_text(size=8,
-                                                family = "Avenir",
-                                                colour = "#666666",
-                                                hjust = 0
-                    ),
-                    plot.margin = unit(c(1,0,0,0), "cm"))
 
 # ISSUE: How to color code by country's node count?
 # ISSUE: The map projection method is visibly elongated for tropical areas.
-# ISSUE: (RESOLVED)How to remove Antarctica? 
 mp <- NULL
 mapWorld <- borders("world", colour="#FFFFFF", fill='grey75', alpha=0.6,
                     ylim = c(-50, 70)) # create a layer of borders
@@ -263,8 +277,8 @@ mp
 ```
 
 ### What are Block Chain Nodes?
-Bitcoin uses "nodes" to validate transactions and secure the network. Nodes the bitcoin core client on a machine instance with the complete block chain. The more functioning nodes there are, the more secured the network is. This maps shows the geographic distribution of nodes. Note that not only it is uneven 
-regionally, there is also an discrepancy between where the nodes are distributed (North America & Europe) and where bitcoin could perhaps help people in economic turbulence, or lacking access to financial resources more than anywhere else (Africa).
+Bitcoin uses "nodes" to validate transactions and secure the network. Nodes the Bitcoin core client on a machine instance with the complete block chain. The more functioning nodes there are, the more secured the network is. This maps shows the geographic distribution of nodes. Note that not only it is uneven 
+regionally, there is also an discrepancy between where the nodes are distributed (North America & Europe) and where Bitcoin could perhaps help people in economic turbulence, or lacking access to financial resources more than anywhere else (Africa).
 
 
 ```{r, dpi=200}
@@ -288,7 +302,6 @@ waffle
 
 ```{r, fig.width=16,dpi=200}
 # Alternative graph 2-2: percentage bar
-# graph 2 alt: stacked percentage bar
 
 #locks factor level
 top_country_nodes$country <- factor(top_country_nodes$country, levels = top_country_nodes$country)
@@ -302,33 +315,13 @@ nation_cols2 <- c(
                 "#999999","#999999","#999999","#999999","#999999",
                 "#dddddd"
                 )
+
 perc_bar <- ggplot(data = top_country_nodes, aes(x="", y = node, fill=factor(country))) + 
   geom_bar(stat='identity', position = position_stack(reverse = TRUE), width=.75, colour="white") +
   coord_flip() +
   scale_fill_manual(values=nation_cols2) +
-  theme(panel.grid.major.y =element_blank(),
-                    aspect.ratio = 0.05,
-                    panel.grid.major.x = element_blank(),
-                    panel.background = element_blank(),
-                    plot.title = element_text(size=24,
-                                              family = "Helvetica",
-                                              colour = "#3a3a3a",
-                                              face = "bold"),
-                    plot.subtitle = element_text(size = 12,
-                                                 family = "Avenir",
-                                                 colour = "#666666"),
-                    axis.title.y=element_blank(),            
-                    axis.title.x = element_blank(),
-                    axis.text.x = element_text(colour="#666666", family = "Avenir", hjust = 1, size=10), # inverted axis
-                    axis.ticks.y = element_blank(),
-                    legend.position = "none",
-                    axis.line.x = element_line(),
-                    plot.caption = element_text(size=12,
-                                                family = "Avenir",
-                                                colour = "#666666",
-                                                hjust = 0
-                                                ),
-                    plot.margin = unit(c(0,2,0,1), "cm"))
+  theme_percBar
+
 perc_bar + scale_y_continuous(name="",labels=c("0%", "USA\n29.62%", "Germany\n17.16%", "France\n6.65%", "Netherlands\n5.19%", "China\n5.11%", "< Countries with over 100 nodes", "Rest of the World\n13.97%"),
                      breaks = (c(0, 2962, (2962+1716), (2962+1716+665), (2962+1716+665+519), (2962+1716+665+519+511),9973-1397,
                               sum(top_country_nodes$node))),
@@ -339,7 +332,7 @@ perc_bar + scale_y_continuous(name="",labels=c("0%", "USA\n29.62%", "Germany\n17
           subtitle = " in high GDP countries, with the Middle East underrepresented")
 ```
 
-### National Distribution of Nodes is an indicator for "cryptocurrecy friendliness"
+### National Distribution of Nodes is an Indicator for "Cryptocurrecy Friendliness"
 The node-by-country ranking shown here is very well aligned with the country/region ranking of Global Financial Centres Index, which measures financial competitiveness based on "business environment", "financial sector development", "infrastructure factors", "human capital", "reputation and general factors".
 These aspects are helpful in thinking about why some of high GDP countries are not hosting Bitcoin nodes. For example, Middle Eastern countries may lack the
 human capital needed; while India may fall short in the financial sector development and infrastructure factors. If the correlations are not coincidental, they can be used as a reference for building a "cryptocurrency friendliness" index.
@@ -350,7 +343,7 @@ human capital needed; while India may fall short in the financial sector develop
 # note: color #85bb65 is nicknamed as "dollar bill green".
 #       color #FF9900 is the orange from bitcoin logo.
 # ISSUE:Both colors are ugly af. Switch soon.
-# ISSUE:graph doesn't show USD volume precedes BTC clear enough.
+# ISSUE:graph doesn't show how USD volume precedes BTC clear enough.
 
 area <- ggplot(data=agg, aes(x = as.POSIXct(date), y = volume, fill = as.factor(unit))) +
   geom_area(position = "stack") +
@@ -362,35 +355,13 @@ area <- ggplot(data=agg, aes(x = as.POSIXct(date), y = volume, fill = as.factor(
   labs(caption = "Source: Coinbase API",
        x = "",
        y = "Volume") +
-  theme(panel.grid.major.y =element_line( size=.1, color="#999999"),
-                    panel.grid.major.x = element_blank(),
-                    panel.background = element_blank(),
-                    plot.title = element_text(size=24,
-                                              family = "Helvetica",
-                                              colour = "#3a3a3a",
-                                              face = "bold"),
-                    plot.subtitle = element_text(size=12,
-                                                 family = "Avenir",
-                                                 colour = "#666666"),
-                    #axis.title.y = element_text(colour="#325a8c"),
-                    axis.title.x = element_blank(),
-                    #axis.text.y = element_text(colour="#325a8c"),
-#                    axis.text.x = element_blank(),
-                    axis.ticks.y = element_blank(),
-#                    axis.ticks.x = element_blank(),
-                    legend.position = "none",
-                    plot.caption = element_text(size=8,
-                                                family = "Avenir",
-                                                colour = "#666666",
-                                                hjust = 0
-                                                ),
-                    plot.margin = unit(c(0,0,0,0), "cm"))
-
+  theme_volume
 area
 ```
 
-### Trading volume difference in USD and Bitcoin shows investing patterns:
-In this graph, we can see that bitcoin's daily trading volume is extremely volatile, perhaps even more so than its price. This graph is indicative in three aspects:
+### Trading Volume Difference in USD and Bitcoin Shows Market Pattern
+
+In this graph, we can see that Bitcoin's daily trading volume is extremely volatile, perhaps even more so than its price. This graph is indicative in three aspects:
 
 1. This level of volatility can be a sign for market manipulation, especially given Bitcoin's young economy, novel nature, and lack of regulation.
 
@@ -399,7 +370,6 @@ In this graph, we can see that bitcoin's daily trading volume is extremely volat
 3. Most interesting trend in this graph is that whenever there is a big spike, the USD volume spikes before the Bitcoin spike, which is more buyers enters the market as the price rises, potentially based on the optimistic psychology.
 
 ```{r, eval=FALSE, dpi=200, fig.width=12}
-# View in full screen for clarity.
 # ISSUE: Probably shouldn't use Heatmap.
 # ISSUE: Needs more deliberate, consistent color scheme
 heatmap <- ggplot(soc, aes(x=rater, y=ratee, fill=score)) + geom_tile() +
@@ -407,37 +377,14 @@ heatmap <- ggplot(soc, aes(x=rater, y=ratee, fill=score)) + geom_tile() +
   ggtitle("The trust nework of Bitcoin traders",
           subtitle = "is sparse and unregulated") +
   labs(caption = "Source: Bitcoin OTC trust network by Stanford University") +
-  theme(panel.grid.major.y = element_blank(),
-        aspect.ratio = 1,
-                    panel.grid.major.x = element_blank(),
-                    panel.background = element_blank(),
-                    plot.title = element_text(size=24,
-                                              family = "Helvetica",
-                                              colour = "#3a3a3a",
-                                              face = "bold"),
-                    plot.subtitle = element_text(size=12,
-                                                 family = "Avenir",
-                                                 colour = "#666666"),
-                    #axis.title.y = element_text(colour="#325a8c"),
-                    axis.title.x = element_blank(),
-                    #axis.text.y = element_text(colour="#325a8c"),
-#                    axis.text.x = element_blank(),
-                    axis.ticks.y = element_blank(),
-#                    axis.ticks.x = element_blank(),
-                    legend.position = "none",
-                    plot.caption = element_text(size=8,
-                                                family = "Avenir",
-                                                colour = "#666666",
-                                                hjust = 0
-                                                ),
-                    plot.margin = unit(c(0,0,0,0), "cm"))
+  theme_heatmap
 heatmap
 ```
 
 ![](graph_4_better_rendering.jpg)
 
 ### The Who-trust-whom Network:
-While sparse and barely visible, this graph provides someinsights about the Bitcoin market. First, it allows us to identify some super raters and ratees, who are more likely to be the major player capable of manipulating Bitcoin price. Second, although orange (trustworthy) is more prevalent, there are quite a few blue spots on this heatmap, marking the users that are rated as fraud by others. At a glimpse, fraud is frequent in digital currency market, which underscores its unregulated nature.
+While sparse and barely visible, this graph provides some insights about the Bitcoin market. First, it allows us to identify some super raters and ratees, who are more likely to be the major player capable of manipulating Bitcoin price. Second, although orange (trustworthy) is more prevalent, there are quite a few blue spots on this heatmap, marking the users that are rated as fraud by others. At a glimpse, fraud is frequent in digital currency market, which underscores its unregulated nature.
 
 ```{r, eval=FALSE}
 # ISSUE: cannot knit this code chunk
@@ -478,7 +425,7 @@ thousand long-term Bitcoin users during 2009 - 2013. We can see that
 the majority is inactive, with one user radiating assets to many others,
 and a few others repeatedly send money to themselves. Not only can this
 network graph serves as a piece of evidence to show that most people 
-purcahse Bitcoin for the purpose of speculation, it also shows that, 
+purchase Bitcoin for the purpose of speculation, it also shows that, 
 while the technological philosophy of Bitcoin is decentralization,
 its ownership and commercial activity is very much the opposite.
 
