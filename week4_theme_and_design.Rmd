@@ -43,7 +43,6 @@ theme_jiye <- theme(panel.grid.major.y =element_line( size=.1, color="#999999"),
                                                 colour = "#666666"
                                                 ),
                     axis.ticks.y = element_blank(),
-#                    axis.ticks.x = element_blank(),
                     legend.position = "none",
                     plot.caption = element_text(size=8,
                                                 family = "Avenir",
@@ -66,7 +65,6 @@ nodes <- mutate(nodes, country = countrycode(country_code,
 # graph 2-2 data
 # I have a full nodes dataset pulled from BitNodes, but for this graph
 # data has to be hand-typed here thanks to waffle package requirement.
-# It's great.
 nation_list <- c(`U.S.A (2962)`=2962,
                 `Germany (1716)`=1716,
                 `France (665)`=665,
@@ -149,22 +147,22 @@ links <- read_tsv("./data/lt_graph_ELTE.txt", col_names = c("sender", "recipient
 
 There are several advantages to dedicate a data visualization portfolio and 10-week effort to digital currency:
 
-* Massive and Robust data source: Blockchain is a public transaction log
+* Massive and Robust data source: Block chain is a public transaction log
   that exists as a distributed database, validated by its powerful algorithm.
     
-* Fitting data types: Blockchain data includes time and IP addresses, and 
+* Fitting data types: Block chain data includes time and IP addresses, and 
   can be updated frequently, which means it is useful for both the static and
   dynamic data visualizations.
     
-* Well-supported: I can save the entire blockchain file locally,use 
+* Well-supported: I can save the entire block chain file locally,use 
   community-maintained tools to parse it, and keep the data up-to-date.
     
 * Policy-setting: Digital currencies are being used as store of value to 
 fight inflation in turbulent economies such as Zimbabwe and Latin American
 countries. Central Banks are issuing experimental policies in response to 
-the dessemination of digital currency and blockchain technology.
+the dessemination of digital currency and block chain technology.
     
-This paper will explore some data sources published by major Bitcoin exchanges and platforms as an market overview.
+Here I will explore some data sources published by major Bitcoin exchanges and platforms as an market overview.
 
 
 ``` {r, dpi=200}
@@ -253,7 +251,7 @@ mapWorld <- borders("world", colour="#FFFFFF", fill='grey75', alpha=0.6,
                     ylim = c(-50, 70)) # create a layer of borders
 mp <- ggplot() + mapWorld
 
-# Now Layer the cities on top
+# layer the cities on top
 mp <- mp+ geom_point(aes(x=nodes$longitude, y=nodes$latitude) ,color="#fe5346", size=0.75, alpha=.25) + 
   geom_path(aes(x=nodes$longitude, y=nodes$latitude), color="#FF9900", size=.1, alpha=0.025,
             linejoin = "bevel") +
@@ -263,6 +261,11 @@ mp <- mp+ geom_point(aes(x=nodes$longitude, y=nodes$latitude) ,color="#fe5346", 
   theme_map
 mp
 ```
+
+### What are Block Chain Nodes?
+Bitcoin uses "nodes" to validate transactions and secure the network. Nodes the bitcoin core client on a machine instance with the complete block chain. The more functioning nodes there are, the more secured the network is. This maps shows the geographic distribution of nodes. Note that not only it is uneven 
+regionally, there is also an discrepancy between where the nodes are distributed (North America & Europe) and where bitcoin could perhaps help people in economic turbulence, or lacking access to financial resources more than anywhere else (Africa).
+
 
 ```{r, dpi=200}
 # graph 2-2: waffle chart
@@ -332,20 +335,23 @@ perc_bar + scale_y_continuous(name="",labels=c("0%", "USA\n29.62%", "Germany\n17
                      expand=c(0,0)
                      ) +
                      labs(caption = "Source: BitNodes") +
-  ggtitle("Blockchain Network is Distributed",
+  ggtitle("Block Chain Network is Distributed",
           subtitle = " in high GDP countries, with the Middle East underrepresented")
 ```
 
-### (ISSUE: REWRITE THIS) Nodes, nodes-nodes, Nodes?
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. 
+### National Distribution of Nodes is an indicator for "cryptocurrecy friendliness"
+The node-by-country ranking shown here is very well aligned with the country/region ranking of Global Financial Centres Index, which measures financial competitiveness based on "business environment", "financial sector development", "infrastructure factors", "human capital", "reputation and general factors".
+These aspects are helpful in thinking about why some of high GDP countries are not hosting Bitcoin nodes. For example, Middle Eastern countries may lack the
+human capital needed; while India may fall short in the financial sector development and infrastructure factors. If the correlations are not coincidental, they can be used as a reference for building a "cryptocurrency friendliness" index.
 
 <br/>
-
 
 ```{r, fig.width = 16, fig.height = 12}
 # note: color #85bb65 is nicknamed as "dollar bill green".
 #       color #FF9900 is the orange from bitcoin logo.
-# ISSUE:Both colors are ugly af, switch soon.
+# ISSUE:Both colors are ugly af. Switch soon.
+# ISSUE:graph doesn't show USD volume precedes BTC clear enough.
+
 area <- ggplot(data=agg, aes(x = as.POSIXct(date), y = volume, fill = as.factor(unit))) +
   geom_area(position = "stack") +
   scale_x_datetime(date_breaks = "3 months", expand=c(0,0)) +
@@ -383,15 +389,14 @@ area <- ggplot(data=agg, aes(x = as.POSIXct(date), y = volume, fill = as.factor(
 area
 ```
 
-### (ISSUE: Rewrite) High Trading Volume Volatility:
-(Should discuss how the price peaks usually precedes bitcoin peaks, discuss
-irational buying behavior, market optimism, etc.)
-In this graph, we can see that bitcoin's daily trading volume is extremely
-volatile, perhaps even more so than its price. This level of volatility can
-be a sign for market manipulation, especially given Bitcoin's young economy,
-novel nature, and lack of regulation. Together with the price trend, this 
-graph can help identify major policy changes that either encourage (spike)
-or discourage (trough) speculation.
+### Trading volume difference in USD and Bitcoin shows investing patterns:
+In this graph, we can see that bitcoin's daily trading volume is extremely volatile, perhaps even more so than its price. This graph is indicative in three aspects:
+
+1. This level of volatility can be a sign for market manipulation, especially given Bitcoin's young economy, novel nature, and lack of regulation.
+
+2. This graph can help identify the time points where major policy changes that either encourage (spike) or discourage (trough) speculation.
+
+3. Most interesting trend in this graph is that whenever there is a big spike, the USD volume spikes before the Bitcoin spike, which is more buyers enters the market as the price rises, potentially based on the optimistic psychology.
 
 ```{r, eval=FALSE, dpi=200, fig.width=12}
 # View in full screen for clarity.
@@ -432,15 +437,7 @@ heatmap
 ![](graph_4_better_rendering.jpg)
 
 ### The Who-trust-whom Network:
-While sparse and barely visible, this graph does provide some
-insights about the Bitcoin market. First, it allows us to identify
-
-some super raters and ratees, who are more likely to be the major
-player capable of manipulating Bitcoin price. Second, although orange
-(trustworthy) is more prevalent, there are quite a few blue spots 
-on this heatmap, marking the users that are rated as fraud by others.
-At a glimpse, fraud is frequent in digital currency market, which
-underscores its unregulated nature.
+While sparse and barely visible, this graph provides someinsights about the Bitcoin market. First, it allows us to identify some super raters and ratees, who are more likely to be the major player capable of manipulating Bitcoin price. Second, although orange (trustworthy) is more prevalent, there are quite a few blue spots on this heatmap, marking the users that are rated as fraud by others. At a glimpse, fraud is frequent in digital currency market, which underscores its unregulated nature.
 
 ```{r, eval=FALSE}
 # ISSUE: cannot knit this code chunk
@@ -488,6 +485,3 @@ its ownership and commercial activity is very much the opposite.
 ```{r, out.width="100px"}
 knitr::include_graphics("signature_YeJi.png")
 ```
-
-
-
