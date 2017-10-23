@@ -12,8 +12,8 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r, out.width="100px"}
-knitr::include_graphics("lightroom_ji_round_expand.jpg")
+```{r, out.width="90px"}
+knitr::include_graphics("lightroom_ji_round.jpg")
 ```
 
 ```{r, echo=TRUE, include=FALSE}
@@ -32,13 +32,16 @@ theme_jiye <- theme(panel.grid.major.y =element_line( size=.1, color="#999999"),
                                               family = "Helvetica",
                                               colour = "#3a3a3a",
                                               face = "bold"),
-                    plot.subtitle = element_text(size=12,
+                    plot.subtitle = element_text(size=10,
                                                  family = "Avenir",
                                                  colour = "#666666"),
                     axis.title.y = element_text(colour="#325a8c"),
                     axis.title.x = element_blank(),
                     axis.text.y = element_text(colour="#325a8c"),
-#                    axis.text.x = element_blank(),
+                    axis.text.x = element_text(size=12,
+                                                family = "Avenir",
+                                                colour = "#666666"
+                                                ),
                     axis.ticks.y = element_blank(),
 #                    axis.ticks.x = element_blank(),
                     legend.position = "none",
@@ -141,8 +144,6 @@ soc <- read_csv("./data/soc-sign-bitcoinotc.csv", col_names = c("rater", "ratee"
 #   graph five data
 links <- read_tsv("./data/lt_graph_ELTE.txt", col_names = c("sender", "recipient", "transaction_timestamp"))
 ```
-
-<br/>
 
 ### Introduction
 
@@ -277,7 +278,7 @@ waffle <- waffle(nation_list%/%100,
        size=1.5,
        colors=nation_cols,
        legend_pos = "bottom",
-       xlab="Total nodes as of Oct 18, 2017 (10320)",
+       xlab="Total nodes as of Oct 18, 2017 (9973)",
        title='Bitcoin Nodes Distribution by Countries (source: BitNodes API)')
 waffle
 ```
@@ -289,9 +290,9 @@ waffle
 #locks factor level
 top_country_nodes$country <- factor(top_country_nodes$country, levels = top_country_nodes$country)
 
-# ISSUE: Hard coded number, should fix soon.
+# ISSUE: Hard coded data, should fix soon.
 # ISSUE: Ugly legend or insufficient legend?
-# ISSUE: don't know how to right-ligh axis tick label.
+# ISSUE: (RESOLVED) don't know how to right-ligh axis tick label.
 nation_cols2 <- c(
                 "#93B7BE","#584F50","#b3906a","#FF991C",'#fb4d3d',
                 "#999999","#999999","#999999","#999999","#999999",
@@ -310,22 +311,16 @@ perc_bar <- ggplot(data = top_country_nodes, aes(x="", y = node, fill=factor(cou
                                               family = "Helvetica",
                                               colour = "#3a3a3a",
                                               face = "bold"),
-                    plot.subtitle = element_text(size=12,
+                    plot.subtitle = element_text(size = 12,
                                                  family = "Avenir",
                                                  colour = "#666666"),
-                    #axis.title.y = element_text(colour="#325a8c"),
                     axis.title.y=element_blank(),            
                     axis.title.x = element_blank(),
-                    axis.text.x = element_text(colour="#325a8c", family="Avenir",hjust =1),
-                    #axis.text.x = element_blank(),
+                    axis.text.x = element_text(colour="#666666", family = "Avenir", hjust = 1, size=10), # inverted axis
                     axis.ticks.y = element_blank(),
-                    #axis.ticks.x = element_blank(),
                     legend.position = "none",
                     axis.line.x = element_line(),
-                    #legend.text.align = ,
-                    #legend.title = element_blank(),
-                    #legend.text = element_text(family = "Avenir", size = 10),
-                    plot.caption = element_text(size=8,
+                    plot.caption = element_text(size=12,
                                                 family = "Avenir",
                                                 colour = "#666666",
                                                 hjust = 0
@@ -490,7 +485,7 @@ purcahse Bitcoin for the purpose of speculation, it also shows that,
 while the technological philosophy of Bitcoin is decentralization,
 its ownership and commercial activity is very much the opposite.
 
-```{r, out.width="120px"}
+```{r, out.width="100px"}
 knitr::include_graphics("signature_YeJi.png")
 ```
 
