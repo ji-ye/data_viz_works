@@ -3,8 +3,8 @@ title: "Explorative DataViz Short Paper"
 author: "Ji, Ye"
 date: "10/15/2017"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -85,6 +85,7 @@ This paper will explore some data sources published by major Bitcoin exchanges a
 
 ### Graph one - line chart
 ```{r, fig.width = 16, fig.height = 9, result="hide"}
+# ISSUE: should probably change x tick label color to a lighter grey.
 line <- ggplot(data=coinbase_lim) +
   geom_line(size=.25,
             aes(unix_timestamp, price),
@@ -341,12 +342,13 @@ net <- graph_from_data_frame(d=links, directed = T)
 # set color
 col.1 <- adjustcolor("#666666", alpha=0.4)
 col.2 <- adjustcolor("#000000", alpha=0.4)
-edge.pal <- colorRampPalette(c(col.1, col.2))#, alpha = TRUE)
-edge.col <- edge.pal(100)
+#edge.pal <- colorRampPalette(c(col.1, col.2))#, alpha = TRUE)
+#edge.col <- edge.pal(100)
+edge.col <- col.1
 
 colrs_transparent <- adjustcolor("#FFFFFF", alpha=0)
 
-#net_simplified <- simplify(net,remove.multiple = F,edge.attr.comb=list(Weight="sum"), remove.loops = T)
+net_simplified <- simplify(net,remove.multiple = F,edge.attr.comb=list(Weight="sum"), remove.loops = T)
 l <- layout_on_sphere(net)
 plot(net,
      layout=l,
