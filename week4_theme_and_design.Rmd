@@ -16,7 +16,8 @@ knitr::opts_chunk$set(echo = TRUE)
 # install packages
 install.packages("easypackages", repos = "http://cran.us.r-project.org")
 library(easypackages)
-packages("anytime","tidyverse","rmarkdown","readr", "haven", "dplyr", "stringr", "ggplot2", "xts", "igraph", "countrycode", "extrafont", "waffle")
+packages("anytime","tidyverse","rmarkdown","readr", "haven", "dplyr", "stringr", "ggplot2", "xts", "igraph", "countrycode", "extrafont", "waffle",
+         "rworldmap", "maps")
 
 # set master theme
 theme_jiye <- theme(panel.grid.major.y =element_line( size=.1, color="#999999"),
@@ -48,8 +49,13 @@ theme_jiye <- theme(panel.grid.major.y =element_line( size=.1, color="#999999"),
 btc_price = read_csv("./data/BCHAIN-MKPRU.csv") # as of 10-21
 btc_price <- mutate(btc_price, Date = as.POSIXct(Date))
 
-#   graph two data
+#   graph 2-1 data
+nodes = read_csv("./data/20171021_nodes.csv")
+nodes <- mutate(nodes, country = countrycode(country_code,
+                                             origin="iso2c",
+                                             destination = "country.name.en"))
 
+# graph 2-2 data
 # I have a full nodes dataset pulled from BitNodes, but for this graph
 # data has to be hand-typed here thanks to waffle package requirement.
 # It's great.
@@ -164,9 +170,53 @@ event may have impacted the price of Bitcoin.
 
 <br/>
 
-```{r, dpi=300}
-# graph 2 alt: waffle chart
+```{r, dpi=300, fig.asp=.65}
+# graph 2-1: nodes map
+# map theme
+theme_map <- theme(panel.grid.major.y = element_blank(),
+                    panel.grid.major.x = element_blank(),
+                    panel.background = element_blank(),
+                    plot.title = element_text(size=24,
+                                              family = "Helvetica",
+                                              colour = "#3a3a3a",
+                                              face = "bold"),
+                    plot.subtitle = element_text(size=12,
+                                                 family = "Avenir",
+                                                 colour = "#666666"),
+                    axis.title.y = element_blank(),
+                    axis.title.x = element_blank(),
+                    axis.text.y = element_blank(),
+                    axis.text.x = element_blank(),
+                    axis.ticks.y = element_blank(),
+                                        axis.ticks.x = element_blank(),
+                    legend.position = "none",
+                    plot.caption = element_text(size=8,
+                                                family = "Avenir",
+                                                colour = "#666666",
+                                                hjust = 0
+                    ),
+                    plot.margin = unit(c(0,0,0,0), "cm"))
 
+# ISSUE: How to color code by country?
+# ISSUE: How to remove Antarctica?
+mp <- NULL
+mapWorld <- borders("world", colour="#FFFFFF", fill='grey75', alpha=0.6,
+                    ylim = c(-50, 70)) # create a layer of borders
+mp <- ggplot() + mapWorld
+
+#Now Layer the cities on top
+mp <- mp+ geom_point(aes(x=nodes$longitude, y=nodes$latitude) ,color="#fe5346", size=0.75, alpha=.25) + 
+  geom_path(aes(x=nodes$longitude, y=nodes$latitude), color="#FF9900", size=.1, alpha=0.025,
+            linejoin = "bevel") +
+  ggtitle("Global Nodes Distribution",
+          subtitle = "is uneven across continents") +
+  labs(caption = "Source: BitNodes") +
+  theme_map
+mp
+```
+
+```{r, dpi=300}
+# graph 2-2: waffle chart
 nation_cols <- c(
                 "#93B7BE","#584F50","#b3906a","#FF991C",'#fb4d3d',
                 '#ff9b9b','#313E50','#78323e','#20FC8F','#90E0F3',
@@ -184,7 +234,7 @@ waffle <- waffle(nation_list%/%100,
 waffle
 ```
 
-### (*REWRITE THIS) Which countries are more crytocurrency-friendly?
+### (REWRITE THIS) Which countries are more crytocurrency-friendly?
 
 Countries that have more reachable nodes means more people in
 the countries are involved in maintaining the bitcoin network,
