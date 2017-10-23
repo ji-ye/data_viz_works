@@ -76,6 +76,8 @@ nation_list <- c(`U.S.A (962)`=2962,
                 `Hong Kong (102)`=102,
                 `Rest of the World(1397)`=1397)
 
+# Alternative graph 2-2 data
+top_country_nodes = read_csv("./data/country_list_topOnly.csv")
 #   graph three data
 # note: this graph should show correlation between price rise with buying interests.
 # get trading volume by coin by left_join volume_usd with price
@@ -146,7 +148,7 @@ line <- ggplot(data=btc_price) +
           subtitle = "experienced the greatest surge in history this year") +
   labs(caption = "Source: Blockchain.com") +
   annotate(geom="text",
-           x=as.POSIXct("2016-01-01"),
+           x=as.POSIXct("2016-01-05"),
            y=2200,
            label="Surge started on Mar 25, 2017",
            colour="#ff7575",
@@ -195,10 +197,10 @@ theme_map <- theme(panel.grid.major.y = element_blank(),
                                                 colour = "#666666",
                                                 hjust = 0
                     ),
-                    plot.margin = unit(c(0,0,0,0), "cm"))
+                    plot.margin = unit(c(1,0,0,0), "cm"))
 
 # ISSUE: How to color code by country?
-# ISSUE: How to remove Antarctica?
+# ISSUE(RESOLVED): How to remove Antarctica? 
 mp <- NULL
 mapWorld <- borders("world", colour="#FFFFFF", fill='grey75', alpha=0.6,
                     ylim = c(-50, 70)) # create a layer of borders
@@ -234,19 +236,66 @@ waffle <- waffle(nation_list%/%100,
 waffle
 ```
 
-### (REWRITE THIS) Which countries are more crytocurrency-friendly?
+```{r, fig.width=16,dpi=300}
+# Alternative graph 2-2: percentage bar
+# graph 2 alt: stacked percentage bar
 
-Countries that have more reachable nodes means more people in
-the countries are involved in maintaining the bitcoin network,
-which indicates that these countries are more likely to have policies,
-or the lack of, to support the development of cryptocurrency.
-For an explorative analysis, this graph is helpful for narrowing
-down the origin of some major policies that have shaped the 
-development of Bitcoin. If we consider this graph as a ranking
-of countries' involvement in digital currency. It is interesting
-to note that, this ranking is not necessarily ordered in exact 
-accordance with the ranking of GDP, population, technological
-advancement, or even perceived internet presence.
+#locks factor level
+top_country_nodes$country <- factor(top_country_nodes$country, levels = top_country_nodes$country)
+
+# ISSUE: Ugly legend or insufficient legend?
+# ISSUE: don't know how to right-ligh axis tick label.
+nation_cols2 <- c(
+                "#93B7BE","#584F50","#b3906a","#FF991C",'#fb4d3d',
+                "#999999","#999999","#999999","#999999","#999999",
+                "#999999","#999999","#999999","#999999","#999999",
+                "#dddddd"
+                )
+perc_bar <- ggplot(data = top_country_nodes, aes(x="", y = node, fill=factor(country))) + 
+  geom_bar(stat='identity', position = position_stack(reverse = TRUE), width=.75, colour="white") +
+  coord_flip() +
+  scale_fill_manual(values=nation_cols2) +
+  theme(panel.grid.major.y =element_blank(),
+                    aspect.ratio = 0.05,
+                    panel.grid.major.x = element_blank(),
+                    panel.background = element_blank(),
+                    plot.title = element_text(size=24,
+                                              family = "Helvetica",
+                                              colour = "#3a3a3a",
+                                              face = "bold"),
+                    plot.subtitle = element_text(size=12,
+                                                 family = "Avenir",
+                                                 colour = "#666666"),
+                    #axis.title.y = element_text(colour="#325a8c"),
+                    axis.title.y=element_blank(),            
+                    axis.title.x = element_blank(),
+                    axis.text.y = element_text(colour="#325a8c", family="Avenir",hjust = .5),
+#                    axis.text.x = element_blank(),
+                    axis.ticks.y = element_blank(),
+                    #axis.ticks.x = element_blank(),
+                    legend.position = "none",
+                    axis.line.x = element_line(),
+                    #legend.text.align = ,
+                    #legend.title = element_blank(),
+                    #legend.text = element_text(family = "Avenir", size = 10),
+                    plot.caption = element_text(size=8,
+                                                family = "Avenir",
+                                                colour = "#666666",
+                                                hjust = 0
+                                                ),
+                    plot.margin = unit(c(0,2,0,1), "cm"))
+perc_bar + scale_y_continuous(name="",labels=c("0%", "USA\n29.62%", "Germany\n17.16%", "France\n6.65%", "Netherlands\n5.19%", "China\n5.11%", "< Countries with over 100 nodes", "Rest of the World\n13.97%"),
+                     breaks = (c(0, 2962, (2962+1716), (2962+1716+665), (2962+1716+665+519), (2962+1716+665+519+511),9973-1397,
+                              sum(top_country_nodes$node))),
+                     expand=c(0,0)
+                     ) +
+                     labs(caption = "Source: BitNodes") +
+  ggtitle("Blockchain Network is Distributed",
+          subtitle = " in high GDP countries, with the Middle East underrepresented")
+```
+
+### (REWRITE THIS) Nodes, nodes-nodes, Nodes?
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. 
 
 <br/>
 
