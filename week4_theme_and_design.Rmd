@@ -12,6 +12,10 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r, out.width="100px"}
+knitr::include_graphics("lightroom_ji_round_expand.jpg")
+```
+
 ```{r, echo=TRUE, include=FALSE}
 # install packages
 install.packages("easypackages", repos = "http://cran.us.r-project.org")
@@ -394,7 +398,7 @@ novel nature, and lack of regulation. Together with the price trend, this
 graph can help identify major policy changes that either encourage (spike)
 or discourage (trough) speculation.
 
-```{r, dpi=200, fig.width=12}
+```{r, eval=FALSE, dpi=200, fig.width=12}
 # View in full screen for clarity.
 # ISSUE: Probably shouldn't use Heatmap.
 # ISSUE: Needs more deliberate, consistent color scheme
@@ -430,6 +434,8 @@ heatmap <- ggplot(soc, aes(x=rater, y=ratee, fill=score)) + geom_tile() +
 heatmap
 ```
 
+![](graph_4_better_rendering.jpg)
+
 ### The Who-trust-whom Network:
 While sparse and barely visible, this graph does provide some
 insights about the Bitcoin market. First, it allows us to identify
@@ -441,7 +447,7 @@ on this heatmap, marking the users that are rated as fraud by others.
 At a glimpse, fraud is frequent in digital currency market, which
 underscores its unregulated nature.
 
-```{r, eval=FALSE, echo=FALSE}
+```{r, eval=FALSE}
 # ISSUE: cannot knit this code chunk
 net <- graph_from_data_frame(d=links, directed = T)
 
