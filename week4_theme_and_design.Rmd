@@ -60,7 +60,7 @@ nodes <- mutate(nodes, country = countrycode(country_code,
 # I have a full nodes dataset pulled from BitNodes, but for this graph
 # data has to be hand-typed here thanks to waffle package requirement.
 # It's great.
-nation_list <- c(`U.S.A (962)`=2962,
+nation_list <- c(`U.S.A (2962)`=2962,
                 `Germany (1716)`=1716,
                 `France (665)`=665,
                 `Netherlands (519)`=519,
@@ -75,10 +75,11 @@ nation_list <- c(`U.S.A (962)`=2962,
                 `Switzerland (138)`=138,
                 `Sweden (131)`=131,
                 `Hong Kong (102)`=102,
-                `Rest of the World(1397)`=1397)
+                `Rest of the World (1397)`=1397)
 
 # Alternative graph 2-2 data
 top_country_nodes = read_csv("./data/country_list_topOnly.csv")
+
 #   graph three data
 # ISSUE: Should update this dataset for all platforms.
 # note: this graph should show correlation between price rise with buying interests.
@@ -127,14 +128,14 @@ agg <- rbind(df_btc, df_usd)
 #colnames(agg) <- c("Date", "volume_usd", "price_usd")
 #agg <- mutate(agg, volume_coin = volume_usd/price_usd)
 
-# ISSUE: what is the difference betwen <- and = ?
+# ISSUE: (RESOLVED) what is the difference betwen <- and = ?
+#        arrow is directional and therefore clearer.
 #colnames(volume_agg) <- c("Date", "volume_coin", "volume_usd")
 
 #   graph four data
 soc <- read_csv("./data/soc-sign-bitcoinotc.csv", col_names = c("rater", "ratee", "score", "rate_timestamp"))
 #   graph five data
-#   graph six data
-#   graph seven data
+links <- read_tsv("./data/lt_graph_ELTE.txt", col_names = c("sender", "recipient", "transaction_timestamp"))
 ```
 
 <br/>
@@ -166,7 +167,7 @@ This paper will explore some data sources published by major Bitcoin exchanges a
 # ISSUE: Should probably change x tick label to lighter grey.
 rectangle <- data.frame(xmin = as.POSIXct(c("2017-03-25")),
                         xmax = as.POSIXct(c("2017-10-21")),
-                        ymin = -Inf,
+                        ymin = 0,
                         ymax = Inf)
 
 line <- ggplot(data=btc_price) +
@@ -439,3 +440,53 @@ player capable of manipulating Bitcoin price. Second, although orange
 on this heatmap, marking the users that are rated as fraud by others.
 At a glimpse, fraud is frequent in digital currency market, which
 underscores its unregulated nature.
+
+```{r, eval=FALSE, echo=FALSE}
+# ISSUE: cannot knit this code chunk
+net <- graph_from_data_frame(d=links, directed = T)
+
+# set color
+col.1 <- adjustcolor("#666666", alpha=0.4)
+col.2 <- adjustcolor("#000000", alpha=0.4)
+#edge.pal <- colorRampPalette(c(col.1, col.2))#, alpha = TRUE)
+#edge.col <- edge.pal(100)
+edge.col <- col.1
+
+colrs_transparent <- adjustcolor("#FFFFFF", alpha=0)
+
+net_simplified <- simplify(net,remove.multiple = F,edge.attr.comb=list(Weight="sum"), remove.loops = T)
+l <- layout_on_sphere(net_simplified)
+plot(net_simplified,
+     layout=l,
+     edge.arrow.size=0.1,
+     vertex.size=2,
+     vertex.color="#FF9900",
+     #vertex.frame.color=colrs_transparent,
+     vertex.label=NA,
+     edge.color="grey50",
+     main="The majority of long-term Bitcoin users does not engage in transaction",
+     sub="Data source: ELTE Bitcoin Project website and resources (2009 - 2013)"
+     )
+legend(x=-0.3, y=-1.1, c("long-term bitcoin user"), col="#FF9900", pch=21, pt.bg="#FF9900")
+```
+
+
+![](week3_graph5_source.png)
+
+### Low Liquidity:
+
+This is a graph that visualizes the transaction activities of several
+thousand long-term Bitcoin users during 2009 - 2013. We can see that
+the majority is inactive, with one user radiating assets to many others,
+and a few others repeatedly send money to themselves. Not only can this
+network graph serves as a piece of evidence to show that most people 
+purcahse Bitcoin for the purpose of speculation, it also shows that, 
+while the technological philosophy of Bitcoin is decentralization,
+its ownership and commercial activity is very much the opposite.
+
+```{r, out.width="120px"}
+knitr::include_graphics("signature_YeJi.png")
+```
+
+
+
