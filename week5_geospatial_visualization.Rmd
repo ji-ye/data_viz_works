@@ -8,7 +8,28 @@ Try executing this chunk by clicking the *Run* button within the chunk or by pla
 
 ```{r}
 library("easypackages")
-packages("gpclib", "rgeos", "rgdal", "maptools", "ggplot2", "sp", "ggmap", "broom", "dplyr")
+packages("anytime",
+         "tidyverse",
+         "rmarkdown",
+         "readr",
+         "haven",
+         "dplyr",
+         "stringr",
+         "ggplot2",
+         "xts",
+         "igraph",
+         "countrycode",
+         "extrafont",
+         "waffle",
+         #"maps",
+         "gpclib",
+         "rgeos",
+         "rgdal",
+         "maptools",
+         "ggplot2",
+         "sp",
+         "ggmap",
+         "broom")
 
 theme_clean_map <- function(base_size = 12) {
     require(grid)
