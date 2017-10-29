@@ -39,24 +39,24 @@ theme_clean_map <- function(base_size = 12) {
 
 # Bitcoin nodes data
 nodes = read_csv("./data/20171021_nodes.csv")
-nodes <- mutate(nodes, country = countrycode(country_code,
+nodes <- mutate(nodes, country_code = countrycode(country_code,
                                              origin="iso2c",
-                                             destination = "iso3c"))
-countrynodes <- as.data.frame(table(nodes$country))
-colnames(countrynodes) <- c("country_iso3", "node_count")
+                                             destination = "country.name.en"))
+countrynodes <- as.data.frame(table(nodes$country_code))
+colnames(countrynodes) <- c("country_code", "node_count")
 
 # coerce data type
-countrynodes <- mutate(countrynodes, country_iso3 = as.character(country_iso3))
+countrynodes <- mutate(countrynodes, country_code = as.character(country_code))
 countrynodes <- mutate(countrynodes, node_count = as.integer(node_count))
-sovereignty = readOGR(dsn = "data/ne_110m_admin_0_sovereignty/", layer = "ne_110m_admin_0_sovereignty")
+countries = readOGR(dsn = "data/ne_110m_admin_0_countries/", layer = "ne_110m_admin_0_countries")
 
-sovereignty.points <- tidy(sovereignty, region = "ADM0_A3_IS")
+countries.points <- tidy(countries, region = "NAME_SORT")
 
 # And join in the original variables from the shapefile
-sovereignty.df <- left_join(sovereignty.points, sovereignty@data, by = c("id" = "ADM0_A3_IS"))
+countries.df <- left_join(countries.points, countries@data, by = c("id" = "NAME_SORT"))
 
 # join node and sovereignty
-joined <- left_join(sovereignty.df, countrynodes, by = c("ADM0_A3_US" = "country_iso3"))
+joined <- left_join(countries.df, countrynodes, by = c("id" = "country_code"))
 
 ggplot(data = joined, aes(x = long, y = lat, group = group, fill = node_count)) +
   geom_polygon(color = "white") +
