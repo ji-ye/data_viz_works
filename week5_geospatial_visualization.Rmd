@@ -1,0 +1,44 @@
+---
+title: "Geospatial Visualizations"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*.
+
+```{r}
+library("easypackages")
+packages("gpclib", "rgeos", "rgdal", "maptools", "ggplot2", "sp", "ggmap", "broom", "dplyr")
+
+theme_clean_map <- function(base_size = 12) {
+    require(grid)
+    theme_grey(base_size) %+replace%
+    theme(
+        axis.title      =   element_blank(),
+        axis.text       =   element_blank(),
+        axis.ticks       =   element_blank(),
+        panel.background    =   element_blank(),
+        panel.grid      =   element_blank(),
+        panel.spacing    =   unit(0,"lines"),
+        plot.margin     =   unit(c(0,0,0,0),"lines"),
+        complete = TRUE
+        )
+    }
+```
+
+
+```{r}
+# shape file
+setwd("/Users/apple/GitHub/data_viz_works/data/ne_110m_admin_0_sovereignty/")
+sovereignty = readOGR(dsn = "./", layer = "ne_110m_admin_0_sovereignty")
+
+# country data
+nodes = read_csv("./data/20171021_nodes.csv")
+nodes <- mutate(nodes, country = countrycode(country_code,
+                                             origin="iso2c",
+                                             destination = "country.name.en"))
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
