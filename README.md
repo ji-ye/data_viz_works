@@ -42,10 +42,26 @@ Explorative Data Visualization: Five graphs with narratives.
 
 ## Week 4
 Theme & design of static visualizations.
+## Data source:
+1. sources from previous weeks
+1. tbd.
+
+##Reference:
+Cryptocurrency regulation. Cross-country analysis, found at:
+https://medium.com/blackmoon-crypto/cryptocurrency-regulation-cross-country-analysis-67452f1df80e
+
+<br/>
+
+## Week 5
+Geospatial Data.
+
 #### Data source:
 1. sources from previous weeks
-2. tbd.
+2. Blockchain.info pool data API at:
+<br /> https://blockchain.info/api/exchange_rates_api
+3. world country shapefile at:
+<br /> http://www.naturalearthdata.com/downloads/
 
 #### Reference:
-1. Cryptocurrency regulation. Cross-country analysis, found at:
-<br/> https://medium.com/blackmoon-crypto/cryptocurrency-regulation-cross-country-analysis-67452f1df80e
+1. McGinn Dan, Birch David, Akroyd David, Molina-Solana Miguel, Guo Yike, and Knottenbelt William J.. Big Data. June 2016, 4(2): 109-119.
+<br /> https://doi.org/10.1089/big.2015.0056
