@@ -218,7 +218,7 @@ the dissemination of digital currency and block chain technology.
 Here I will explore some data sources published by major Bitcoin exchanges and platforms as an market overview.
 
 
-``` {r, dpi=200}
+``` {r, dpi=300}
 rectangle <- data.frame(xmin = as.POSIXct(c("2017-03-25")),
                         xmax = as.POSIXct(c("2017-10-21")),
                         ymin = 0,
@@ -277,7 +277,7 @@ event may have impacted the price of Bitcoin.
 
 <br/>
 
-```{r, eval=FALSE, dpi=200, fig.asp=.65}
+```{r, eval=FALSE, dpi=300, fig.asp=.65}
 # graph 2-1: nodes map (updated week 5)
 nodes_map <- ggplot(data = joined, aes(x = long, y = lat, group = group, fill = cut(node_count, c(0, 100, 500, 1000, 2000, Inf)))) +
   
@@ -317,15 +317,15 @@ nodes_map
 knitr::include_graphics("global_nodes_dist.png")
 ```
 
-### ### Geo-spatial Plot 1:
-I like this NA == White specification much more than my previous design. It really make the absence of Africa and the Middle East obvious - They're simply dissapeared from sight in the enclosed world of Bitcoin economy. And this visualization grasp that.
+### Geo-spatial Plot 1:
+I like this NA == White specification much more than my previous design. It really make the absence of Africa and the Middle East obvious - They're simply dissappeared from sight in the enclosed world of Bitcoin economy. And this visualization grasp that.
 
 ### What are Block Chain Nodes?
 Bitcoin uses "nodes" to validate transactions and secure the network. Nodes the Bitcoin core client on a machine instance with the complete block chain. The more functioning nodes there are, the more secured the network is. This maps shows the geographic distribution of nodes. Note that not only it is uneven 
 regionally, there is also an discrepancy between where the nodes are distributed (North America & Europe) and where Bitcoin could perhaps help people in economic turbulence, or lacking access to financial resources more than anywhere else (Africa).
 
 
-```{r, fig.width=16,dpi=200}
+```{r, fig.width=16,dpi=300}
 # graph 2-2: percentage bar
 
 # locks factor level
@@ -366,7 +366,7 @@ human capital needed; while India may fall short in the financial sector develop
 
 <br/>
 
-```{r, fig.width=16,dpi=200}
+```{r, fig.width=16,dpi=300}
 # graph 2-3: miner pool
 #pool_perc_bar <- ggplot(data = miner_company, aes(x="", y = blocks_mined, fill=factor(miner_pool))) + 
   
@@ -442,7 +442,7 @@ In this graph, we can see that Bitcoin's daily trading volume is extremely volat
 
 3. Most interesting trend in this graph is that whenever there is a big spike, the USD volume spikes before the Bitcoin spike, which is more buyers enters the market as the price rises, potentially based on the optimistic psychology.
 
-```{r, eval=FALSE, dpi=200, fig.width=12}
+```{r, eval=FALSE, dpi=300, fig.width=12}
 # ISSUE: Probably shouldn't use Heatmap.
 # ISSUE: Needs more deliberate, consistent color scheme
 heatmap <- ggplot(soc, aes(x=rater, y=ratee, fill=score)) + geom_tile() +
