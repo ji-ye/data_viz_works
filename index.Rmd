@@ -1,5 +1,5 @@
 ---
-title: "Untitled (Static Visualization Work in Progress)"
+title: "Data Visualization for Policy Analysis (Work in Progress)"
 author: "Ji, Ye"
 date: "10/29/2017"
 output:
@@ -33,7 +33,6 @@ packages("anytime",
          "countrycode",
          "extrafont",
          "waffle",
-         #"maps",
          "gpclib",
          "rgeos",
          "rgdal",
@@ -150,26 +149,6 @@ countries.df <- left_join(countries.points, countries@data, by = c("id" = "NAME_
 # join node and countries
 joined <- left_join(countries.df, countrynodes, by = c("id" = "country_code"))
 
-# graph 2-2 data
-# I have a full nodes dataset pulled from BitNodes, but for this graph
-# data has to be hand-typed here thanks to waffle package requirement.
-nation_list <- c(`U.S.A (2962)`=2962,
-                `Germany (1716)`=1716,
-                `France (665)`=665,
-                `Netherlands (519)`=519,
-                `China (511)`=511,
-                `Canada (431)`=431,
-                `U.K. & Northern Ireland (362)`=362,
-                `Russian Federation (334)`=334,
-                `Singapore (217)`=217,
-                `Ireland (201)`=201,
-                `Australia (149)`=149,
-                `Japan (138)`=138,
-                `Switzerland (138)`=138,
-                `Sweden (131)`=131,
-                `Hong Kong (102)`=102,
-                `Rest of the World (1397)`=1397)
-
 # Alternative graph 2-2 data
 top_country_nodes = read_csv("./data/country_list_topOnly.csv")
 
@@ -211,24 +190,6 @@ df_usd$unit <- "Thousand USD"
 colnames(df_usd) <- c("date", "volume", "unit")
 
 agg <- rbind(df_btc, df_usd)
-#volume_usd <- read_csv("./data/20171018_Bitcoin USD Exchange Trading Volume.csv")
-#volume_usd <- mutate(volume_usd, Date = as.POSIXct(Date))
-#volume_usd$unit <- "USD"
-
-#volume_usd <- mutate(volume_coin, unit = "USD")
-
-#agg <- left_join(x=volume_usd, y=btc_price, by="Date")
-#colnames(agg) <- c("Date", "volume_usd", "price_usd")
-#agg <- mutate(agg, volume_coin = volume_usd/price_usd)
-
-# ISSUE: (RESOLVED) what is the difference betwen <- and = ?
-#        arrow is directional and therefore clearer.
-#colnames(volume_agg) <- c("Date", "volume_coin", "volume_usd")
-
-#   graph 4 data
-soc <- read_csv("./data/soc-sign-bitcoinotc.csv", col_names = c("rater", "ratee", "score", "rate_timestamp"))
-#   graph 5 data
-links <- read_tsv("./data/lt_graph_ELTE.txt", col_names = c("sender", "recipient", "transaction_timestamp"))
 ```
 
 ### Introduction
@@ -254,31 +215,37 @@ Here I will explore some data sources published by major Bitcoin exchanges and p
 
 
 ``` {r, dpi=200}
-# ISSUE: what is target user's viewing device and optimum dpi?
-# ISSUE: Should probably change x tick label to lighter grey.
 rectangle <- data.frame(xmin = as.POSIXct(c("2017-03-25")),
                         xmax = as.POSIXct(c("2017-10-21")),
                         ymin = 0,
                         ymax = Inf)
 
+
 line <- ggplot(data=btc_price) +
+  
   geom_line(size=.25,
             aes(Date, Value),
             color="#325a8c") +
+  
   geom_vline(xintercept = as.POSIXct("2017-03-25"),
              colour="#ff7575",
              size=.5,
              linetype="dotted",
              alpha=.75) +
+  
   scale_y_continuous(name ="Bitcoin Market Price in USD",
                      breaks = (seq(0,6000,1000))
                      ) +
+  
   scale_x_datetime(date_breaks = "1 year",
                    labels = seq(2009,2018,1),
                    expand=c(0,0)) +
+  
   ggtitle("Bitcoin Price",
           subtitle = "experienced the greatest surge in history this year") +
+  
   labs(caption = "Source: Blockchain.com") +
+  
   annotate(geom="text",
            x=as.POSIXct("2016-01-25"),
            y=2150,
@@ -287,6 +254,7 @@ line <- ggplot(data=btc_price) +
            family="Avenir",
            fontface="bold",
            alpha=1) +
+  
   theme_jiye
 
 # add surge bar
@@ -308,23 +276,40 @@ event may have impacted the price of Bitcoin.
 ```{r, eval=FALSE, dpi=200, fig.asp=.65}
 # graph 2-1: nodes map (updated week 5)
 
-# ISSUE (RESOLVED): How to color code by country's node count?
-# ISSUE (RESOLVED): The map projection method is visibly elongated for tropical areas.
-
 # I like this white NA value specification much more than previous version,
 # because the absence of African countries is made obvious.
-nodes_map <- ggplot(data = joined, aes(x = long, y = lat, group = group, fill = node_count)) +
-  geom_polygon(color = "white") +
+nodes_map <- ggplot(data = joined, aes(x = long, y = lat, group = group, fill = cut(node_count, c(0, 100, 500, 1000, 2000, Inf)))) +
+  
+  geom_polygon() +
+  
   coord_map("gall", 45, ylim = c(90, -60)) + 
+  
   theme_clean_map() +
-  scale_fill_continuous(low = "#E1E1E1", high = "#666666", na.value = "#ffffff")
+  
+  scale_fill_manual(values=c("#dddddd", "#bbbbbb", "#999999", "#777777", "#555555"),
+                    name = "Number of Nodes",
+                    labels=c("less than 1% of the total nodes",
+                              "100 to 500", 
+                              "500 to 1000",
+                              "1000 to 2000",
+                              "2000 and more"))
 
 nodes_map <- nodes_map +
-  ggtitle("Global Nodes Distribution is uneven across continents",
-          subtitle = "darker shade represents more nodes") +
+  
+  ggtitle("Global Nodes Distribution is Uneven Across Continents",
+          subtitle = "Africa and the Middle East is largely absent") +
+  
   labs(caption = "Source: BitNodes API") +
-  theme_map
+  
+  theme_map + theme(legend.position = c(0.15, 0.15),
+                    legend.title = element_text(family = "Avenir"),
+                    legend.text = element_text(family = "Avenir"),
+                    legend.direction = "vertical")
+
 nodes_map
+
+ggsave("gnd.pdf", plot = nodes_map, device="pdf")
+
 ```
 
 ```{r, out.width="1600px"}
@@ -336,37 +321,12 @@ Bitcoin uses "nodes" to validate transactions and secure the network. Nodes the 
 regionally, there is also an discrepancy between where the nodes are distributed (North America & Europe) and where Bitcoin could perhaps help people in economic turbulence, or lacking access to financial resources more than anywhere else (Africa).
 
 
-```{r, eval=FALSE, dpi=200}
-# (Removed week 5) graph 2-2: waffle chart
-# This waffle chart is removed due to chaotic color scheme and the low customizability of Waffle Package.
-# ISSUE: Is the Waffle package at all customizable?
-
-nation_cols <- c(
-                "#93B7BE","#584F50","#b3906a","#FF991C",'#fb4d3d',
-                '#ff9b9b','#313E50','#78323e','#20FC8F','#90E0F3',
-                '#5b8e7d','#ffb7c5','#CFB53B','#769855','#e13224',
-                "#CCCCCC"
-                )
-
-waffle <- waffle(nation_list%/%100,
-       rows=3,
-       size=1.5,
-       colors=nation_cols,
-       legend_pos = "bottom",
-       xlab="Total nodes as of Oct 18, 2017 (9973)",
-       title='Bitcoin Nodes Distribution by Countries (source: BitNodes API)')
-waffle
-```
-
 ```{r, fig.width=16,dpi=200}
-# Alternative graph 2-2: percentage bar
+# graph 2-2: percentage bar
 
-#locks factor level
+# locks factor level
 top_country_nodes$country <- factor(top_country_nodes$country, levels = top_country_nodes$country)
 
-# ISSUE: Hard coded data, should fix soon.
-# ISSUE: Ugly legend or insufficient legend?
-# ISSUE: (RESOLVED) don't know how to right-ligh axis tick label.
 nation_cols2 <- c(
                 "#93B7BE","#584F50","#b3906a","#FF991C",'#fb4d3d',
                 "#999999","#999999","#999999","#999999","#999999",
@@ -375,19 +335,24 @@ nation_cols2 <- c(
                 )
 
 perc_bar <- ggplot(data = top_country_nodes, aes(x="", y = node, fill=factor(country))) + 
+  
   geom_bar(stat='identity', position = position_stack(reverse = TRUE), width=.75, colour="white") +
+  
   coord_flip() +
+  
   scale_fill_manual(values=nation_cols2) +
+  
   theme_percBar
 
-perc_bar + scale_y_continuous(name="",labels=c("0%", "USA\n29.62%", "Germany\n17.16%", "France\n6.65%", "Netherlands\n5.19%", "China\n5.11%", "< Countries with over 100 nodes", "Rest of the World\n13.97%"),
-                     breaks = (c(0, 2962, (2962+1716), (2962+1716+665), (2962+1716+665+519), (2962+1716+665+519+511),9973-1397,
+perc_bar + scale_y_continuous(name="",
+                              labels=c("0%", "USA\n29.62%", "Germany\n17.16%", "France\n6.65%", "Netherlands\n5.19%", "China\n5.11%", "< Countries over 1%", "Rest of the World\n13.97%"),
+                              breaks = (c(0, 2962, (2962+1716), (2962+1716+665), (2962+1716+665+519), (2962+1716+665+519+511),9973-1397,
                               sum(top_country_nodes$node))),
-                     expand=c(0,0)
-                     ) +
-                     labs(caption = "Source: BitNodes") +
-  ggtitle("Block Chain Network is Distributed",
-          subtitle = " in high GDP countries, with the Middle East underrepresented")
+                              expand=c(0,0)
+                              ) +
+            labs(caption = "Source: BitNodes") +
+            ggtitle("Block Chain Network is Distributed",
+                    subtitle = " in high GDP countries, with the Middle East underrepresented")
 ```
 
 ### National Distribution of Nodes is an Indicator for "Cryptocurrecy Friendliness"
@@ -396,6 +361,13 @@ These aspects are helpful in thinking about why some of high GDP countries are n
 human capital needed; while India may fall short in the financial sector development and infrastructure factors. If the correlations are not coincidental, they can be used as a reference for building a "cryptocurrency friendliness" index.
 
 <br/>
+
+```{r, fig.width=16,dpi=200}
+# graph 2-3: miner pool
+
+
+```
+
 
 ```{r, fig.width = 16, fig.height = 12}
 # note: color #85bb65 is nicknamed as "dollar bill green".
