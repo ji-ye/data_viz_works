@@ -149,8 +149,12 @@ countries.df <- left_join(countries.points, countries@data, by = c("id" = "NAME_
 # join node and countries
 joined <- left_join(countries.df, countrynodes, by = c("id" = "country_code"))
 
-# Alternative graph 2-2 data
+# graph 2-2 data
 top_country_nodes = read_csv("./data/country_list_topOnly.csv")
+
+#graph 2-3 data
+miner_country <- read_csv("./data/miner - country.csv")
+miner_company <- read_csv("./data/miner_company_sorted.csv")
 
 # graph 3 data
 # ISSUE: Should update this dataset for all platforms.
@@ -275,9 +279,6 @@ event may have impacted the price of Bitcoin.
 
 ```{r, eval=FALSE, dpi=200, fig.asp=.65}
 # graph 2-1: nodes map (updated week 5)
-
-# I like this white NA value specification much more than previous version,
-# because the absence of African countries is made obvious.
 nodes_map <- ggplot(data = joined, aes(x = long, y = lat, group = group, fill = cut(node_count, c(0, 100, 500, 1000, 2000, Inf)))) +
   
   geom_polygon() +
@@ -308,13 +309,16 @@ nodes_map <- nodes_map +
 
 nodes_map
 
-ggsave("gnd.pdf", plot = nodes_map, device="pdf")
+#ggsave("gnd.pdf", plot = nodes_map, device="pdf")
 
 ```
 
 ```{r, out.width="1600px"}
 knitr::include_graphics("global_nodes_dist.png")
 ```
+
+### ### Geo-spatial Plot 1:
+I like this NA == White specification much more than my previous design. It really make the absence of Africa and the Middle East obvious - They're simply dissapeared from sight in the enclosed world of Bitcoin economy. And this visualization grasp that.
 
 ### What are Block Chain Nodes?
 Bitcoin uses "nodes" to validate transactions and secure the network. Nodes the Bitcoin core client on a machine instance with the complete block chain. The more functioning nodes there are, the more secured the network is. This maps shows the geographic distribution of nodes. Note that not only it is uneven 
@@ -364,10 +368,49 @@ human capital needed; while India may fall short in the financial sector develop
 
 ```{r, fig.width=16,dpi=200}
 # graph 2-3: miner pool
+#pool_perc_bar <- ggplot(data = miner_company, aes(x="", y = blocks_mined, fill=factor(miner_pool))) + 
+  
+#  geom_bar(stat='identity', position = position_stack(reverse = TRUE), width=.75, colour="white") +
+  
+#  coord_flip() +
+  
+#  scale_fill_discrete() +
+  
+#  theme_percBar + theme(legend.position = "bottom")
+
+# pool_perc_bar
+
+perc_china <- miner_country[miner_country$country_of_origin == "China", "blocks_mined_perc"][["blocks_mined_perc"]]
+perc_Czech <- perc_china + miner_country[miner_country$country_of_origin == "Czech Republic", "blocks_mined_perc"][["blocks_mined_perc"]]
+perc_Georgia <- perc_Czech + miner_country[miner_country$country_of_origin == "Georgia", "blocks_mined_perc"][["blocks_mined_perc"]]
+perc_india <- perc_Georgia + miner_country[miner_country$country_of_origin == "India", "blocks_mined_perc"][["blocks_mined_perc"]]
+perc_Norway <- perc_india + miner_country[miner_country$country_of_origin == "Norway", "blocks_mined_perc"][["blocks_mined_perc"]]
+perc_Rus <- perc_Norway + miner_country[miner_country$country_of_origin == "Russia", "blocks_mined_perc"][["blocks_mined_perc"]]
+
+country_perc_bar <- ggplot(data = miner_country, aes(x="", y = blocks_mined_perc, fill=factor(country_of_origin))) + 
+  
+  geom_bar(stat='identity', position = position_stack(reverse = TRUE), width=.75, colour="white") +
+  
+  coord_flip() +
+  
+  scale_fill_manual(values=c("#fb4d3d", "#74B9D5", "#F27A30", "#FCCA46", "#9ECF9A", "#002865", "#999999"))
+  
 
 
+country_perc_bar + scale_y_continuous(name="",
+                              labels=c("", "China 76.1%", "Czech Rep 7.3%", "Georgia 4.1%", "India 2.4%", "Norway 3.7%", "", "Global or Unknown origin 6.1%"),
+                              breaks = c(0, perc_china, perc_Czech, perc_Georgia, perc_india, perc_Norway, perc_Rus, 1),
+                              expand = c(0,0)) +
+    theme_percBar + theme(legend.position = "none",
+                          axis.text.x = element_text(angle = 30)
+                          ) + 
+  ggtitle("If All the Bitcoin Miners Were a Person...",
+          subtitle = "He is basically Chinese, with some Second World lineage, one Indian forearm, and a full-blood transfusion from anonymous donors.") +
+          labs(captions = "Source: Blockchain.info")
 ```
 
+### Geo-spatial plot No. 2:
+Here I have a much simpler data to visualize, and find the percentage bar fitting for presenting it. In the title writing, I experienced with the "weird comparison" discussed by Amanda Cox in her talk, in hope of leaving the viewer with something more memorable from this simple graph.
 
 ```{r, fig.width = 16, fig.height = 12}
 # note: color #85bb65 is nicknamed as "dollar bill green".
