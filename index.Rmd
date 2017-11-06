@@ -3,6 +3,7 @@ title: "Data Visualization for Policy Analysis (Work in Progress)"
 author: "Ji, Ye"
 date: "10/29/2017"
 output:
+  pdf_document: default
   html_document:
     code_folding: hide
     fig_width: 9
@@ -277,7 +278,7 @@ event may have impacted the price of Bitcoin.
 
 <br/>
 
-```{r, eval=FALSE, dpi=300, fig.asp=.65}
+```{r, eval=TRUE, dpi=300, fig.asp=.65}
 # graph 2-1: nodes map (updated week 5)
 nodes_map <- ggplot(data = joined, aes(x = long, y = lat, group = group, fill = cut(node_count, c(0, 100, 500, 1000, 2000, Inf)))) +
   
